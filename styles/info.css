@@ -1,0 +1,18 @@
+.starter-template table {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 50px;
+}
+
+.starter-template table td {
+  padding: 5px;
+}
+
+.starter-template table td:first-child {
+  padding-right: 10px;
+}
+
+.starter-template table td:first-child label {
+  font-weight: 400;
+  margin-bottom: 1px;
+}

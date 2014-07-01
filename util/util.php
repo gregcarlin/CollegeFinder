@@ -47,6 +47,7 @@ function authenticate() {
 
 // signs the current user in. must include get-db.php before using. returns true on success, false on failure
 function signIn($email, $pass) {
+  global $mysql;
   $stmt = $mysql->prepare("SELECT `id` FROM `students` WHERE `email` = ? AND `pass` = AES_ENCRYPT(?, 'supersecretkey')");
   $stmt->bind_param("ss", $email, $pass);
   $stmt->execute();
