@@ -4,8 +4,8 @@
   require_once "util/header-signedin.php";
 
   function n($name) {
-    if(isset($_POST['name']) && strlen($_POST['name']) > 0) {
-      return $_POST['name'];
+    if(isset($_POST[$name]) && strlen($_POST[$name]) > 0) {
+      return $_POST[$name];
     } else {
       return NULL;
     }
@@ -18,9 +18,9 @@
     $lname = n('lname');
     if($fname == NULL || $lname == NULL) {
       $error = 1;
-    }
+    } else {
 
-      $stmt = $mysql->prepare("UPDATE `students` SET `fname` = ?, `lname` = ?, `sat` = ?, `sat_mt` = ?, `sat_cr` = ?, `sat_wr` = ?, `act` = ?, `act_en` = ?, `act_mt` = ?, `act_rd` = ?, `act_sc` = ?, `act_wr` = ?, `gpa_weight` = ? WHERE `id` = ?");
+      $stmt = $mysql->prepare("UPDATE `students` SET `fname` = ?, `lname` = ?, `sat` = ?, `sat_mt` = ?, `sat_cr` = ?, `sat_wr` = ?, `act` = ?, `act_en` = ?, `act_mt` = ?, `act_rd` = ?, `act_sc` = ?, `act_wr` = ?, `gpa_weight` = ?, `gpa_noweight` = ? WHERE `id` = ?");
       $stmt->bind_param('ssssssssssssssi', $fname, $lname, n('sat'), n('satMT'), n('satCR'), n('satWR'), n('act'), n('actEN'), n('actMT'), n('actRD'), n('actSC'), n('actWR'), n('gpaWeight'), n('gpaNoWeight'), $id);
       $stmt->execute();
       $stmt->close();
@@ -81,7 +81,15 @@
         <form action="#" method="post">
           <table>
             <?php
-
+              if($changes) {
+                echo '<tr>';
+                echo '<td colspan="2" class="success">Changes saved.</td>';
+                echo '</tr>';
+              } else if($error == 1) {
+                echo '<tr>';
+                echo '<td colspan="2" class="error">You cannot leave your name blank.</td>';
+                echo '</tr>';
+              }
               a("fname", "First Name");
               a("lname", "Last Name");
               doubleBlank();
@@ -101,7 +109,7 @@
               doubleBlank();
               a("gpaWeight", "Unweighted GPA");
               a("gpaNoWeight", "Weighted GPA");
-              doubleBlank();
+              /*doubleBlank();*/
             ?>
             <tr>
               <td colspan="2"><input type="submit" class="btn btn-primary" value="Save Changes" /></td>

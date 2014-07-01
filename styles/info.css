@@ -35,13 +35,19 @@
   margin-right: auto;
 }
 
-.btn {
+.btn-primary {
   margin-left: auto;
   margin-right: auto;
+  margin-top: 40px;
   display: block;
 }
 
 .error {
   text-align: center !important;
   color: #F00;
+}
+
+.success {
+  text-align: center !important;
+  color: #5cb85c;
 }
