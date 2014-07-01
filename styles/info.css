@@ -6,6 +6,7 @@
 
 .starter-template table td {
   padding: 5px;
+  text-align: right;
 }
 
 .starter-template table td:first-child {
@@ -15,4 +16,32 @@
 .starter-template table td:first-child label {
   font-weight: 400;
   margin-bottom: 1px;
+}
+
+.blank {
+  height: 15px;
+}
+
+.double-blank {
+  height: 40px;
+}
+
+.double-blank span {
+  display: block;
+  width: 150px;
+  height: 1px;
+  background-color: #999;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.btn {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+.error {
+  text-align: center !important;
+  color: #F00;
 }
