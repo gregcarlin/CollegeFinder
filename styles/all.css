@@ -1,0 +1,53 @@
+body {
+  padding-top: 50px;
+  padding-bottom: 20px;
+}
+
+.starter-template {
+  padding: 40px 15px;
+  text-align: center;
+}
+
+.popup {
+  display: none;
+  z-index: 4;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  background-color: #FFF;
+  border-radius: 4px;
+  box-shadow: 0 0 10px 0px #555;
+}
+
+.sign-up-pop {
+  width: 400px;
+  margin-left: -200px;
+  height: 300px;
+  margin-top: -150px;
+}
+
+.sign-up-pop table {
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 15px;
+}
+
+.sign-up-pop table td {
+  padding: 5px;
+}
+
+.sign-up-pop table label {
+  font-weight: normal;
+  margin-bottom: 0;
+  float: right;
+}
+
+.sign-up-pop table .btn {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+.sign-up-pop h2 {
+  text-align: center;
+}

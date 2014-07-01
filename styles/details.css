@@ -1,0 +1,244 @@
+.lead ol {
+    counter-reset: details;
+    list-style-position: inside;
+}
+
+.lead ol > li {
+    list-style-type: none;
+    counter-increment: details;
+    margin-top: 15px;
+}
+
+.lead ol > li:before {
+    display: inline-block;
+    text-align: right;
+    font-size: 26px;
+    content: counter(details) ".";
+    position: relative;
+    left: -0.5em;
+}
+
+.start {
+    font-size: 20px;
+    font-weight: 200;
+    margin-bottom: 50px;
+}
+
+.data-container {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 15px;
+    display: inline-block;
+    font-size: 18px;
+}
+
+.data-container select.form-control:not([multiple]) {
+    display: inline;
+    width: 250px;
+}
+
+.scores table label {
+    font-weight: 200;
+}
+
+.scores table input {
+    text-align: center;
+    width: 75px;
+}
+
+.scores table a {
+    float: left;
+    margin-left: 17px;
+}
+
+.scores table td {
+    height: 38px;
+}
+
+.scores .error, .scores .extra-td {
+    width: 100px;
+}
+
+.scores .lbl-td, .scores .input-td {
+    width: 75px;
+}
+
+.error {
+    font-size: 14px;
+    color: #F00;
+}
+
+.subtext {
+    font-size: 14px;
+    display: block;
+}
+
+#advanced-size {
+    margin-left: 15px;
+    float: left;
+}
+
+.size-prefs {
+    margin-bottom: 15px;
+}
+
+.size-prefs .error, .size-prefs .adv-btn {
+    width: 100px;
+}
+
+.size-prefs .size-opt {
+    width: 250px;
+}
+
+.size-prefs .to {
+    width: 25px;
+}
+
+.adv-size {
+    display: none;
+    width: 250px;
+}
+
+#advanced-loc {
+    margin-left: 15px;
+    float: left;
+}
+
+.adv-loc {
+    display: none;
+    width: 75px;
+    text-align: center;
+}
+
+.loc-prefs .error, .loc-prefs .adv-btn {
+    width: 100px;
+}
+
+.sentence input:not(.adv-loc) {
+    display: inline;
+    width: 75px;
+    text-align: center;
+}
+
+.sentence {
+    margin-bottom: 15px;
+}
+
+#results {
+    position: relative;
+    top: -4px;
+}
+
+.major-left, .major-right {
+    width: 425px;
+    font-size: 14px;
+    vertical-align: text-top;
+}
+
+.major-left ul, .major-right ul {
+    font-weight: 200;
+    list-style-type: none;
+}
+
+.major-left {
+    float: left;
+}
+
+.major-right {
+    float: right;
+}
+
+.major-section {
+    font-weight: 400;
+    text-align: left;
+}
+
+.major-hidden ul {
+    display: none;
+}
+
+.indicator {
+    margin-right: 5px;
+}
+
+a.indicator:hover {
+    cursor: pointer;
+}
+
+.add, .remove {
+    margin-left: 5px;
+    font-size: 10px;
+}
+
+a.add:hover, a.remove:hover {
+    cursor: pointer;
+}
+
+.small {
+    font-size: 12px;
+}
+
+a.small:hover {
+    cursor: pointer;
+}
+
+.gpa-popup {
+    width: 400px;
+    margin-left: -200px;
+}
+
+.gpa-popup-container {
+    margin: 20px;
+}
+
+.gpa-popup-container th {
+    font-size: 18px;
+    font-weight: 200;
+    padding-right: 10px;
+}
+
+.gpa-popup-container td {
+    padding-right: 10px;
+    padding-top: 10px;
+}
+
+.gpa-class-container {
+    max-height: 200px;
+    overflow: scroll;
+    display: block;
+}
+
+.gpa-popup button {
+    margin-top: 10px;
+    margin-bottom: -5px;
+}
+
+.result table .header {
+    font-size: 24pt;
+    background-color: inherit;
+    border: none;
+    font-weight: 400;
+    padding: 0;
+}
+
+.result table {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    font-size: 14pt;
+}
+
+.result table th, .result table td {
+    padding: 5px;
+    text-align: left;
+    border: 1px solid #666;
+}
+
+.result table th {
+    font-weight: 500;
+    background-color: #BBB;
+}
+
+.result .foot {
+    margin-top: 30px;
+}
