@@ -13,18 +13,15 @@
 
   $changes = false;
   $error = 0;
-  if(anySet('fname', 'lname', /*'email',*/ 'sat', 'satMT', 'satCR', 'satWR', 'act', 'actEN', 'actMT', 'actRD', 'actSC', 'actWR', 'gpaWeight', 'gpaNoWeight')) {
+  if(anySet('fname', 'lname', 'sat', 'satMT', 'satCR', 'satWR', 'act', 'actEN', 'actMT', 'actRD', 'actSC', 'actWR', 'gpaWeight', 'gpaNoWeight')) {
     $fname = n('fname');
     $lname = n('lname');
-    //$email = n('email');
     if($fname == NULL || $lname == NULL) {
       $error = 1;
-    }/* else if($email == NULL) {
-      $error = 2;
-    } else {*/
+    }
 
-      $stmt = $mysql->prepare("UPDATE `students` SET `fname` = ?, `lname` = ?, `email` = ?, `sat` = ?, `sat_mt` = ?, `sat_cr` = ?, `sat_wr` = ?, `act` = ?, `act_en` = ?, `act_mt` = ?, `act_rd` = ?, `act_sc` = ?, `act_wr` = ?, `gpa_weight` = ? WHERE `id` = ?");
-      $stmt->bind_param('sssssssssssssssi', $fname, $lname, $email, n('sat'), n('satMT'), n('satCR'), n('satWR'), n('act'), n('actEN'), n('actMT'), n('actRD'), n('actSC'), n('actWR'), n('gpaWeight'), n('gpaNoWeight'), $id);
+      $stmt = $mysql->prepare("UPDATE `students` SET `fname` = ?, `lname` = ?, `sat` = ?, `sat_mt` = ?, `sat_cr` = ?, `sat_wr` = ?, `act` = ?, `act_en` = ?, `act_mt` = ?, `act_rd` = ?, `act_sc` = ?, `act_wr` = ?, `gpa_weight` = ? WHERE `id` = ?");
+      $stmt->bind_param('ssssssssssssssi', $fname, $lname, n('sat'), n('satMT'), n('satCR'), n('satWR'), n('act'), n('actEN'), n('actMT'), n('actRD'), n('actSC'), n('actWR'), n('gpaWeight'), n('gpaNoWeight'), $id);
       $stmt->execute();
       $stmt->close();
       $changes = true;
@@ -32,13 +29,12 @@
     }
   }
 
-  $stmt = $mysql->prepare("SELECT `fname`,`lname`,`email`,`sat`,`sat_mt`,`sat_cr`,`sat_wr`,`act`,`act_en`,`act_mt`,`act_rd`,`act_sc`,`act_wr`,`gpa_weight`,`gpa_noweight` FROM `students` WHERE `id` = ?");
+  $stmt = $mysql->prepare("SELECT `fname`,`lname`,`sat`,`sat_mt`,`sat_cr`,`sat_wr`,`act`,`act_en`,`act_mt`,`act_rd`,`act_sc`,`act_wr`,`gpa_weight`,`gpa_noweight` FROM `students` WHERE `id` = ?");
   $stmt->bind_param("i", $id);
   $stmt->execute();
   $vars = array(
       "fname" => NULL,
       "lname" => NULL,
-      "email" => NULL,
       "sat" => NULL,
       "satMT" => NULL,
       "satCR" => NULL,
@@ -52,7 +48,7 @@
       "gpaWeight" => NULL,
       "gpaNoWeight" => NULL,
     );
-  $stmt->bind_result($vars["fname"], $vars["lname"], $vars["email"], $vars["sat"], $vars["satMT"], $vars["satCR"], $vars["satWR"], $vars["act"], $vars["actEN"], $vars["actMT"], $vars["actRD"], $vars["actSC"], $vars["actWR"], $vars["gpaWeight"], $vars["gpaNoWeight"]);
+  $stmt->bind_result($vars["fname"], $vars["lname"], $vars["sat"], $vars["satMT"], $vars["satCR"], $vars["satWR"], $vars["act"], $vars["actEN"], $vars["actMT"], $vars["actRD"], $vars["actSC"], $vars["actWR"], $vars["gpaWeight"], $vars["gpaNoWeight"]);
   assert($stmt->fetch());
   $stmt->close();
 
@@ -88,13 +84,6 @@
 
               a("fname", "First Name");
               a("lname", "Last Name");
-              /*doubleBlank();
-              //if($error == 2) {
-                echo '<tr>';
-                echo '<td colspan="2" class="error">You must have a valid email address.</td>';
-                echo '</tr>';
-              //}
-              a("email", "Email Address");*/
               doubleBlank();
               a("sat", "Best Single-Sitting SAT");
               blank();
