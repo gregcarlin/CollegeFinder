@@ -27,6 +27,15 @@ function e($var) {
   }
 }
 
+// returns the value of the given variable in POST if it is set and has a length > 0, otherwise returns NULL
+function n($name) {
+  if(isset($_POST[$name]) && strlen($_POST[$name]) > 0) {
+    return $_POST[$name];
+  } else {
+    return NULL;
+  }
+}
+
 // interprets a checkbox sent via POST
 function isChecked($name) {
   return isset($_POST[$name]);

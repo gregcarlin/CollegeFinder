@@ -3,14 +3,6 @@
   $extra = '<link href="styles/info.css" rel="stylesheet" />';
   require_once "util/header-signedin.php";
 
-  function n($name) {
-    if(isset($_POST[$name]) && strlen($_POST[$name]) > 0) {
-      return $_POST[$name];
-    } else {
-      return NULL;
-    }
-  }
-
   $changes = false;
   $error = 0;
   if(anySet('fname', 'lname', 'sat', 'satMT', 'satCR', 'satWR', 'act', 'actEN', 'actMT', 'actRD', 'actSC', 'actWR', 'gpaWeight', 'gpaNoWeight')) {

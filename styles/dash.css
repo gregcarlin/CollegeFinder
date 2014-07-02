@@ -1,0 +1,67 @@
+.dash-form {
+  width: 450px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 50px;
+}
+
+.dash-form > label {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.dash-form > div, .dash-form > table {
+  margin-left: 20px;
+}
+
+.dash-form > div > label, .dash-form > table label {
+  font-weight: 200;
+}
+
+.dash-form > table td {
+  vertical-align: text-top;
+  width: 225px;
+}
+
+.dash-form > .sectioned label {
+  margin-left: 25px;
+}
+
+.dash-form > .sectioned td[colspan="2"] {
+  text-align: left;
+}
+
+.dash-form .form-control {
+  display: inline;
+  width: 60px;
+  text-align: center;
+  padding: 2px;
+}
+
+.dash-form .addr {
+  display: block;
+  margin: 5px auto;
+  width: 90%;
+}
+
+h2 {
+  text-align: left;
+}
+
+h3 {
+  font-size: 15px;
+  font-weight: 400;
+  margin: 3px 0 5px 15px;
+}
+
+label {
+  display: block;
+  text-align: left;
+}
+
+label input {
+  margin-left: 10px !important;
+  margin-right: 5px !important;
+  position: relative;
+  top: -1px;
+}
