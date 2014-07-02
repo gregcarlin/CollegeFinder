@@ -12,6 +12,7 @@
 
 .dash-form > div, .dash-form > table {
   margin-left: 20px;
+  display: none;
 }
 
 .dash-form > div > label, .dash-form > table label {
