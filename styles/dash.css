@@ -18,13 +18,13 @@
   display: none;
 }
 
-.dash-form > div > label, .dash-form > table label {
+.dash-form > div label, .dash-form > table label {
   font-weight: 200;
 }
 
 .dash-form > table td {
   vertical-align: text-top;
-  width: 225px;
+  width: 50%;
 }
 
 .dash-form > .sectioned label {
@@ -75,4 +75,32 @@ label input {
   text-align: center;
   display: inline;
   padding: 2px;
+}
+
+.major {
+  width: 425px;
+  font-size: 14px;
+  vertical-align: text-top;
+}
+
+.major ul {
+  font-weight: 200;
+  list-style-type: none;
+}
+
+.major-section {
+  font-weight: 400;
+  text-align: left;
+}
+
+.major-hidden ul {
+  display: none;
+}
+
+.major a:hover {
+  cursor: pointer;
+}
+
+.success {
+  color: #5cb85c;
 }

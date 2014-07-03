@@ -25,9 +25,25 @@ function updateDegrees() {
   update("degrees-type", ["none", "some"]);
 }
 
+function updateMajors() {
+  update("majors-type", ["none", "some"]);
+}
+
 window.onload = function() {
   updateLocation();
   updateLevel();
   updateControl();
   updateDegrees();
+  updateMajors();
 };
+
+function toggleSec(id) {
+    $(".major-sec-" + id + " ul").toggle();
+    var indicator = $(".indicator-" + id);
+    var status = indicator.html();
+    if(status == "[+]") {
+        indicator.html("[-]");
+    } else {
+        indicator.html("[+]");
+    }
+}

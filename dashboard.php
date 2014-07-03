@@ -37,7 +37,7 @@
   function score($name, $label, $min, $max) {
     echo '<tr>';
     echo '<td><label for="' . $name . '-min">' . $label . ' Between:</label></td>';
-    echo '<td><input type="text" name="' . $name . '-min" id="' . $name . '-min" class="form-control" placeholder="' . $min . '" /> and <input type="text" name="' . $name . '-max" id="' . $name . '-max" class="form-control" placeholder="' . $max . '" /></td>';
+    echo '<td><input type="text" name="' . $name . '-min" id="' . $name . '-min" class="form-control" placeholder="' . $min . '" value="' . valOf($name . "-min") . '" /> and <input type="text" name="' . $name . '-max" id="' . $name . '-max" class="form-control" placeholder="' . $max . '" value="' . valOf($name . "-max") . '" /></td>';
     echo '</tr>';
   }
 
@@ -52,10 +52,11 @@
     if(!in_array($locType, array('none', 'setting', 'distance', 'state'))) {
       $error = 1; // kids messin' with my code
     } else {
-      $stmt = $mysql->prepare("UPDATE `prefs` SET `loc_type` = ?, `loc_setting` = ?, `loc_dist_min` = ?, `loc_dist_max` = ?, `loc_dist_addr` = ?, `loc_state` = ?, `level_type` = ?, `level` = ?");
-      $stmt->bind_param("ssiissss", $locType, implode(',', bArr('loc-setting')), bInt('loc-dist-min'), bInt('loc-dist-max'), b('loc-dist-from'), implode(',', bArr('loc-state')), b('level-type'), implode(',', bArr('level')));
+      $stmt = $mysql->prepare("UPDATE `prefs` SET `loc_type` = ?, `loc_setting` = ?, `loc_dist_min` = ?, `loc_dist_max` = ?, `loc_dist_addr` = ?, `loc_state` = ?, `level_type` = ?, `level` = ?, `control_type` = ?, `control` = ?, `degrees_type` = ?, `degrees` = ?, `majors_type` = ?, `majors` = ?, `black` = ?, `hospital` = ?, `hospital_missing` = ?, `med_deg` = ?, `med_deg_missing` = ?, `tribal` = ?, `public` = ?, `sat_min` = ?, `sat_max` = ?, `sat_mt_min` = ?, `sat_mt_max` = ?, `sat_cr_min` = ?, `sat_cr_max` = ?, `sat_wr_min` = ?, `sat_wr_max` = ?, `act_min` = ?, `act_max` = ?, `act_en_min` = ?, `act_en_max` = ?, `act_mt_min` = ?, `act_mt_max` = ?, `act_wr_min` = ?, `act_wr_max` = ?");
+      $stmt->bind_param("ssiissssssssssiiiiiiiiiiiiiiiiiiiiiii", $locType, implode(',', bArr('loc-setting')), bInt('loc-dist-min'), bInt('loc-dist-max'), b('loc-dist-from'), implode(',', bArr('loc-state')), b('level-type'), implode(',', bArr('level')), b('control-type'), implode(',', bArr('control')), b('degrees-type'), implode(',', bArr('degrees')), b('majors-type'), implode(',', bArr('majors')), bInt('black'), bInt('hospital'), isChecked('hospital-missing'), bInt('med-deg'), isChecked('med-deg-missing'), bInt('tribal'), bInt('public'), bInt('sat-min'), bInt('sat-max'), bInt('sat-mt-min'), bInt('sat-mt-max'), bInt('sat-cr-min'), bInt('sat-cr-max'), bInt('sat-wr-min'), bInt('sat-wr-max'), bInt('act-min'), bInt('act-max'), bInt('act-en-min'), bInt('act-en-max'), bInt('act-mt-min'), bInt('act-mt-max'), bInt('act-wr-min'), bInt('act-wr-max'));
       $stmt->execute();
       $stmt->close();
+      $changes = true;
     }
   }
 
@@ -71,7 +72,7 @@
   }
   $stmt->close();
 
-  $stmt = $mysql->prepare("SELECT `loc_type`,`loc_setting`,`loc_dist_min`,`loc_dist_max`,`loc_dist_addr`,`loc_state`,`level_type`,`level` FROM `prefs` WHERE `id` = ?");
+  $stmt = $mysql->prepare("SELECT `loc_type`,`loc_setting`,`loc_dist_min`,`loc_dist_max`,`loc_dist_addr`,`loc_state`,`level_type`,`level`,`control_type`,`control`,`degrees_type`,`degrees`,`majors_type`,`majors`,`black`,`hospital`,`hospital_missing`,`med_deg`,`med_deg_missing`,`tribal`,`public`,`sat_min`,`sat_max`,`sat_mt_min`,`sat_mt_max`,`sat_cr_min`,`sat_cr_max`,`sat_wr_min`,`sat_wr_max`,`act_min`,`act_max`,`act_en_min`,`act_en_max`,`act_mt_min`,`act_mt_max`,`act_wr_min`,`act_wr_max` FROM `prefs` WHERE `id` = ?");
   $stmt->bind_param("i", $id);
   $stmt->execute();
 
@@ -84,13 +85,45 @@
       "loc-state" => NULL,
       "level-type" => NULL,
       "level" => NULL,
+      "control-type" => NULL,
+      "control" => NULL,
+      "degrees-type" => NULL,
+      "degrees" => NULL,
+      "majors-type" => NULL,
+      "majors" => NULL,
+      "black" => NULL,
+      "hospital" => NULL,
+      "hospital-missing" => NULL,
+      "med-deg" => NULL,
+      "med-deg-missing" => NULL,
+      "tribal" => NULL,
+      "public" => NULL,
+      "sat-min" => NULL,
+      "sat-max" => NULL,
+      "sat-mt-min" => NULL,
+      "sat-mt-max" => NULL,
+      "sat-cr-min" => NULL,
+      "sat-cr-max" => NULL,
+      "sat-wr-min" => NULL,
+      "sat-wr-max" => NULL,
+      "act-min" => NULL,
+      "act-max" => NULL,
+      "act-en-min" => NULL,
+      "act-en-max" => NULL,
+      "act-mt-min" => NULL,
+      "act-mt-max" => NULL,
+      "act-wr-min" => NULL,
+      "act-wr-max" => NULL,
     );
-  $stmt->bind_result($vars["loc-type"], $vars["loc-setting"], $vars["loc-dist-min"], $vars["loc-dist-max"], $vars["loc-dist-from"], $vars["loc-state"], $vars["level-type"], $vars["level"]);
+  $stmt->bind_result($vars["loc-type"], $vars["loc-setting"], $vars["loc-dist-min"], $vars["loc-dist-max"], $vars["loc-dist-from"], $vars["loc-state"], $vars["level-type"], $vars["level"], $vars["control-type"], $vars["control"], $vars["degrees-type"], $vars["degrees"], $vars["majors-type"], $vars["majors"], $vars["black"], $vars["hospital"], $vars["hospital-missing"], $vars["med-deg"], $vars["med-deg-missing"], $vars["tribal"], $vars["public"], $vars["sat-min"], $vars["sat-max"], $vars["sat-mt-min"], $vars["sat-mt-max"], $vars["sat-cr-min"], $vars["sat-cr-max"], $vars["sat-wr-min"], $vars["sat-wr-max"], $vars["act-min"], $vars["act-max"], $vars["act-en-min"], $vars["act-en-max"], $vars["act-mt-min"], $vars["act-mt-max"], $vars["act-wr-min"], $vars["act-wr-max"]);
   assert($stmt->fetch());
   $stmt->close();
   $vars["loc-setting"] = explode(",", $vars["loc-setting"]);
   $vars["loc-state"] = explode(",", $vars["loc-state"]);
   $vars["level"] = explode(",", $vars["level"]);
+  $vars["control"] = explode(",", $vars["control"]);
+  $vars["degrees"] = explode(",", $vars["degrees"]);
+  $vars["majors"] = explode(",", $vars["majors"]);
 
   function valOf($name) {
     global $vars;
@@ -104,8 +137,7 @@
   }
 
   function checked($name, $var) {
-    global $vars;
-    if($vars[$var] == $name) {
+    if(valOf($var) == $name) {
       echo " checked";
     }
   }
@@ -116,6 +148,51 @@
 
   function lvl($name) {
     checked($name, 'level-type');
+  }
+
+  function ctr($name) {
+    checked($name, 'control-type');
+  }
+
+  function deg($name) {
+    checked($name, 'degrees-type');
+  }
+
+  function mjr($name) {
+    checked($name, 'majors-type');
+  }
+
+  function selected($name, $val) {
+    if(valOf($name) == $val) {
+      echo " selected";
+    }
+  }
+
+  function blk($val) {
+    selected('black', $val);
+  }
+
+  function hos($val) {
+    selected('hospital', $val);
+  }
+
+  function med($val) {
+    selected('med-deg', $val);
+  }
+
+  function trb($val) {
+    selected('tribal', $val);
+  }
+
+  function pub($val) {
+    selected('public', $val);
+  }
+
+  function checkedBasic($name) {
+    global $vars;
+    if(isChecked($name) || ($vars[$name] != NULL && $vars[$name] != 0)) {
+      echo " checked";
+    }
   }
 
   function e0($name) {
@@ -132,6 +209,9 @@
         <h1>Change your preferences</h1>
 
         <form action="#" method="post" class="dash-form">
+          <?php if($changes): ?>
+            <span class="success">Changes saved.</span>
+          <?php endif; ?>
           <h2>Location</h2>
           <label><input type="radio" name="loc-type" value="none" onclick="updateLocation()"<?php loc("none"); ?> />No Preference</label>
           <div id="loc-type-none" class="loc">
@@ -334,9 +414,9 @@
           </table>
 
           <h2>Control</h2>
-          <label><input type="radio" name="control-type" value="none" onclick="updateControl()" />No Preference</label>
+          <label><input type="radio" name="control-type" value="none" onclick="updateControl()"<?php ctr('none'); ?> />No Preference</label>
           <div class="loc" id="control-type-none">Include all public and private schools.</div>
-          <label><input type="radio" name="control-type" value="some" onclick="updateControl()" />Preference</label>
+          <label><input type="radio" name="control-type" value="some" onclick="updateControl()"<?php ctr('some'); ?> />Preference</label>
           <table class="loc" id="control-type-some">
             <tr>
               <td>
@@ -353,9 +433,9 @@
           </table>
 
           <h2>Degree</h2>
-          <label><input type="radio" name="degrees-type" value="none" onclick="updateDegrees()" />No Preference</label>
+          <label><input type="radio" name="degrees-type" value="none" onclick="updateDegrees()"<?php deg('none'); ?> />No Preference</label>
           <div class="loc" id="degrees-type-none">Include schools that grant all degrees and those that don't grant any.</div>
-          <label><input type="radio" name="degrees-type" value="some" onclick="updateDegrees()" />Preference</label>
+          <label><input type="radio" name="degrees-type" value="some" onclick="updateDegrees()"<?php deg('some'); ?> />Preference</label>
           <table class="loc" id="degrees-type-some">
             <tr>
               <td>
@@ -378,15 +458,63 @@
             </tr>
           </table>
 
+          <h2>Majors</h2>
+          <label><input type="radio" name="majors-type" value="none" onclick="updateMajors()"<?php mjr('none'); ?> />No Preference</label>
+          <div class="loc" id="majors-type-none">Include schools that offer any majors.</div>
+          <label><input type="radio" name="majors-type" value="some" onclick="updateMajors()"<?php mjr('some'); ?> />Preference</label>
+          <div class="major loc" id="majors-type-some">
+            <?php
+
+              $stmt = $mysql->prepare("SELECT `id`,`name` FROM `major_sections`");
+              $stmt->execute();
+              $stmt->store_result();
+
+              $secID = NULL;
+              $secName = NULL;
+              $stmt->bind_result($secID, $secName);
+
+              while($stmt->fetch()) {
+
+                echo '<div class="major-section major-hidden major-sec-' . $secID . '">';
+                echo '<a class="indicator indicator-' . $secID . '" onclick="toggleSec(' . $secID . ')">[+]</a>';
+                echo $secName;
+                echo '<ul>';
+
+                $stmt2 = $mysql->prepare("SELECT `id`,`name` FROM `majors` WHERE `section` = ?");
+                $stmt2->bind_param("i", $secID);
+                $stmt2->execute();
+                $stmt2->store_result();
+
+                $majorID = NULL;
+                $majorName = NULL;
+                $stmt2->bind_result($majorID, $majorName);
+
+                while($stmt2->fetch()) {
+                  $val = valOf('majors');
+                  echo '<li class="major-' . $majorID . '"><label><input type="checkbox" name="majors[]" value="' . $majorID . '"' . (($val != NULL && in_array($majorID, $val)) ? ' checked' : '') . ' />' . $majorName . '</label></li>';
+                }
+
+                $stmt2->close();
+
+                echo '</ul>';
+                echo '</div>';
+
+              }
+
+              $stmt->close();
+
+            ?>
+          </div>
+
           <h2>History and Facts</h2>
           <table>
             <tr>
               <td><label for="black">Historically Black:</label></td>
               <td>
                 <select name="black" id="black" class="form-control">
-                  <option value="-1">No Preference</option>
-                  <option value="1">Yes</option>
-                  <option value="0">No</option>
+                  <option value="-1"<?php blk(-1); ?>>No Preference</option>
+                  <option value="1"<?php blk(1); ?>>Yes</option>
+                  <option value="0"<?php blk(0); ?>>No</option>
                 </select>
               </td>
             </tr>
@@ -394,35 +522,35 @@
               <td><label for="hospital">Has Hospital:</label></td>
               <td>
                 <select name="hospital" id="hospital" class="form-control">
-                  <option value="0">No Preference</option>
-                  <option value="1">Yes</option>
-                  <option value="2">No</option>
+                  <option value="0"<?php hos(0); ?>>No Preference</option>
+                  <option value="1"<?php hos(1); ?>>Yes</option>
+                  <option value="2"<?php hos(2); ?>>No</option>
                 </select>
               </td>
             </tr>
             <tr>
-              <td colspan="2"><label><input type="checkbox" name="hospital-missing" value="yes" />Include Schools with Unknown Hospital Presence</label></td>
+              <td colspan="2"><label><input type="checkbox" name="hospital-missing" value="yes"<?php checkedBasic('hospital-missing'); ?> />Include Schools with Unknown Hospital Presence</label></td>
             </tr>
             <tr>
               <td><label for="med-deg">Grants Medical Degree:</label></td>
               <td>
                 <select name="med-deg" id="med-deg" class="form-control">
-                  <option value="0">No Preference</option>
-                  <option value="1">Yes</option>
-                  <option value="2">No</option>
+                  <option value="0"<?php med(0); ?>>No Preference</option>
+                  <option value="1"<?php med(1); ?>>Yes</option>
+                  <option value="2"<?php med(2); ?>>No</option>
                 </select>
               </td>
             </tr>
             <tr>
-              <td colspan="2"><label><input type="checkbox" name="med-deg-missing" value="yes" />Inculde Schools with Unknown Medical Degree Grating Status</label></td>
+              <td colspan="2"><label><input type="checkbox" name="med-deg-missing" value="yes"<?php checkedBasic('med-deg-missing'); ?> />Inculde Schools with Unknown Medical Degree Grating Status</label></td>
             </tr>
             <tr>
               <td><label for="tribal">Tribal College or University:</label></td>
               <td>
                 <select name="tribal" id="tribal" class="form-control">
-                  <option value="-1">No Preference</option>
-                  <option value="1">Yes</option>
-                  <option value="0">No</option>
+                  <option value="-1"<?php trb(-1); ?>>No Preference</option>
+                  <option value="1"<?php trb(1); ?>>Yes</option>
+                  <option value="0"<?php trb(0); ?>>No</option>
                 </select>
               </td>
             </tr>
@@ -430,9 +558,9 @@
               <td><label for="public">Open to the General Public:</label></td>
               <td>
                 <select name="public" id="public" class="form-control">
-                  <option value="-1">No Preference</option>
-                  <option value="1">Yes</option>
-                  <option value="0">No</option>
+                  <option value="-1"<?php pub(-1); ?>>No Preference</option>
+                  <option value="1"<?php pub(1); ?>>Yes</option>
+                  <option value="0"<?php pub(0); ?>>No</option>
                 </select>
               </td>
             </tr>
@@ -531,7 +659,7 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="js/jquery.min.js"></script>
     <script src="bootstrap/js/bootstrap.min.js"></script>
     <script src="js/dashboard.js"></script>
   </body>
