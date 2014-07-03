@@ -12,6 +12,9 @@
 
 .dash-form > div, .dash-form > table {
   margin-left: 20px;
+}
+
+.loc {
   display: none;
 }
 
@@ -32,14 +35,14 @@
   text-align: left;
 }
 
-.dash-form .form-control {
+.dash-form .loc .form-control[type="text"] {
   display: inline;
   width: 60px;
   text-align: center;
   padding: 2px;
 }
 
-.dash-form .addr {
+.dash-form .loc .addr[type="text"] {
   display: block;
   margin: 5px auto;
   width: 90%;
@@ -65,4 +68,11 @@ label input {
   margin-right: 5px !important;
   position: relative;
   top: -1px;
+}
+
+.scores .form-control {
+  width: 52px;
+  text-align: center;
+  display: inline;
+  padding: 2px;
 }

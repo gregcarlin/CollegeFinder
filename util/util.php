@@ -36,6 +36,34 @@ function n($name) {
   }
 }
 
+// returns the value of the given variable in POST if it is set, otherwise returns an empty string
+function b($name) {
+  if(isset($_POST[$name])) {
+    return $_POST[$name];
+  } else {
+    return "";
+  }
+}
+
+// returns the value of the given variable in POST if it is set, otherwise returns an empty array
+function bArr($name) {
+  if(isset($_POST[$name])) {
+    return $_POST[$name];
+  } else {
+    return array();
+  }
+}
+
+// returns the integer value of the given variable in POST if it is set to a valid integer, otherwise returns 0
+function bInt($name) {
+  if(isset($_POST[$name])) {
+    $i = intval($_POST[$name]);
+    return is_nan($i) ? 0 : $i;
+  } else {
+    return 0;
+  }
+}
+
 // interprets a checkbox sent via POST
 function isChecked($name) {
   return isset($_POST[$name]);
