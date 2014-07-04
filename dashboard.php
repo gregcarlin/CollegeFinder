@@ -52,8 +52,8 @@
     if(!in_array($locType, array('none', 'setting', 'distance', 'state'))) {
       $error = 1; // kids messin' with my code
     } else {
-      $stmt = $mysql->prepare("UPDATE `prefs` SET `loc_type` = ?, `loc_setting` = ?, `loc_dist_min` = ?, `loc_dist_max` = ?, `loc_dist_addr` = ?, `loc_state` = ?, `level_type` = ?, `level` = ?, `control_type` = ?, `control` = ?, `degrees_type` = ?, `degrees` = ?, `majors_type` = ?, `majors` = ?, `black` = ?, `hospital` = ?, `hospital_missing` = ?, `med_deg` = ?, `med_deg_missing` = ?, `tribal` = ?, `public` = ?, `sat_min` = ?, `sat_max` = ?, `sat_mt_min` = ?, `sat_mt_max` = ?, `sat_cr_min` = ?, `sat_cr_max` = ?, `sat_wr_min` = ?, `sat_wr_max` = ?, `act_min` = ?, `act_max` = ?, `act_en_min` = ?, `act_en_max` = ?, `act_mt_min` = ?, `act_mt_max` = ?, `act_wr_min` = ?, `act_wr_max` = ?");
-      $stmt->bind_param("ssiissssssssssiiiiiiiiiiiiiiiiiiiiiii", $locType, implode(',', bArr('loc-setting')), bInt('loc-dist-min'), bInt('loc-dist-max'), b('loc-dist-from'), implode(',', bArr('loc-state')), b('level-type'), implode(',', bArr('level')), b('control-type'), implode(',', bArr('control')), b('degrees-type'), implode(',', bArr('degrees')), b('majors-type'), implode(',', bArr('majors')), bInt('black'), bInt('hospital'), isChecked('hospital-missing'), bInt('med-deg'), isChecked('med-deg-missing'), bInt('tribal'), bInt('public'), bInt('sat-min'), bInt('sat-max'), bInt('sat-mt-min'), bInt('sat-mt-max'), bInt('sat-cr-min'), bInt('sat-cr-max'), bInt('sat-wr-min'), bInt('sat-wr-max'), bInt('act-min'), bInt('act-max'), bInt('act-en-min'), bInt('act-en-max'), bInt('act-mt-min'), bInt('act-mt-max'), bInt('act-wr-min'), bInt('act-wr-max'));
+      $stmt = $mysql->prepare("UPDATE `prefs` SET `loc_type` = ?, `loc_setting` = ?, `loc_dist_min` = ?, `loc_dist_max` = ?, `loc_dist_addr` = ?, `loc_state` = ?, `level_type` = ?, `level` = ?, `control_type` = ?, `control` = ?, `degrees_type` = ?, `degrees` = ?, `majors_type` = ?, `majors` = ?, `black` = ?, `hospital` = ?, `hospital_missing` = ?, `med_deg` = ?, `med_deg_missing` = ?, `tribal` = ?, `public` = ?, `sat_min` = ?, `sat_max` = ?, `sat_mt_min` = ?, `sat_mt_max` = ?, `sat_cr_min` = ?, `sat_cr_max` = ?, `sat_wr_min` = ?, `sat_wr_max` = ?, `act_min` = ?, `act_max` = ?, `act_en_min` = ?, `act_en_max` = ?, `act_mt_min` = ?, `act_mt_max` = ?, `act_wr_min` = ?, `act_wr_max` = ?, `accept_min` = ?, `accept_max` = ?, `male_min` = ?, `male_max` = ?, `housing` = ?, `housing_missing` = ?, `board` = ?, `board_missing` = ?, `campus_required` = ?, `campus_required_missing` = ?, `dist` = ?");
+      $stmt->bind_param("ssiissssssssssiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiis", $locType, implode(',', bArr('loc-setting')), bInt('loc-dist-min'), bInt('loc-dist-max'), b('loc-dist-from'), implode(',', bArr('loc-state')), b('level-type'), implode(',', bArr('level')), b('control-type'), implode(',', bArr('control')), b('degrees-type'), implode(',', bArr('degrees')), b('majors-type'), implode(',', bArr('majors')), bInt('black'), bInt('hospital'), isChecked('hospital-missing'), bInt('med-deg'), isChecked('med-deg-missing'), bInt('tribal'), bInt('public'), bInt('sat-min'), bInt('sat-max'), bInt('sat-mt-min'), bInt('sat-mt-max'), bInt('sat-cr-min'), bInt('sat-cr-max'), bInt('sat-wr-min'), bInt('sat-wr-max'), bInt('act-min'), bInt('act-max'), bInt('act-en-min'), bInt('act-en-max'), bInt('act-mt-min'), bInt('act-mt-max'), bInt('act-wr-min'), bInt('act-wr-max'), bInt('accept-min'), bInt('accept-max'), bInt('male-min'), bInt('male-max'), bInt('housing'), isChecked('housing-missing'), bInt('board'), isChecked('board-missing'), bInt('campus-required'), isChecked('campus-required-missing'), implode(',', bArr('dist')));
       $stmt->execute();
       $stmt->close();
       $changes = true;
@@ -72,7 +72,7 @@
   }
   $stmt->close();
 
-  $stmt = $mysql->prepare("SELECT `loc_type`,`loc_setting`,`loc_dist_min`,`loc_dist_max`,`loc_dist_addr`,`loc_state`,`level_type`,`level`,`control_type`,`control`,`degrees_type`,`degrees`,`majors_type`,`majors`,`black`,`hospital`,`hospital_missing`,`med_deg`,`med_deg_missing`,`tribal`,`public`,`sat_min`,`sat_max`,`sat_mt_min`,`sat_mt_max`,`sat_cr_min`,`sat_cr_max`,`sat_wr_min`,`sat_wr_max`,`act_min`,`act_max`,`act_en_min`,`act_en_max`,`act_mt_min`,`act_mt_max`,`act_wr_min`,`act_wr_max` FROM `prefs` WHERE `id` = ?");
+  $stmt = $mysql->prepare("SELECT `loc_type`,`loc_setting`,`loc_dist_min`,`loc_dist_max`,`loc_dist_addr`,`loc_state`,`level_type`,`level`,`control_type`,`control`,`degrees_type`,`degrees`,`majors_type`,`majors`,`black`,`hospital`,`hospital_missing`,`med_deg`,`med_deg_missing`,`tribal`,`public`,`sat_min`,`sat_max`,`sat_mt_min`,`sat_mt_max`,`sat_cr_min`,`sat_cr_max`,`sat_wr_min`,`sat_wr_max`,`act_min`,`act_max`,`act_en_min`,`act_en_max`,`act_mt_min`,`act_mt_max`,`act_wr_min`,`act_wr_max`,`accept_min`,`accept_max`,`male_min`,`male_max`,`housing`,`housing_missing`,`board`,`board_missing`,`campus_required`,`campus_required_missing`,`dist` FROM `prefs` WHERE `id` = ?");
   $stmt->bind_param("i", $id);
   $stmt->execute();
 
@@ -114,8 +114,19 @@
       "act-mt-max" => NULL,
       "act-wr-min" => NULL,
       "act-wr-max" => NULL,
+      "accept-min" => NULL,
+      "accept-max" => NULL,
+      "male-min" => NULL,
+      "male-max" => NULL,
+      "housing" => NULL,
+      "housing-missing" => NULL,
+      "board" => NULL,
+      "board-missing" => NULL,
+      "campus-required" => NULL,
+      "campus-required-missing" => NULL,
+      "dist" => NULL,
     );
-  $stmt->bind_result($vars["loc-type"], $vars["loc-setting"], $vars["loc-dist-min"], $vars["loc-dist-max"], $vars["loc-dist-from"], $vars["loc-state"], $vars["level-type"], $vars["level"], $vars["control-type"], $vars["control"], $vars["degrees-type"], $vars["degrees"], $vars["majors-type"], $vars["majors"], $vars["black"], $vars["hospital"], $vars["hospital-missing"], $vars["med-deg"], $vars["med-deg-missing"], $vars["tribal"], $vars["public"], $vars["sat-min"], $vars["sat-max"], $vars["sat-mt-min"], $vars["sat-mt-max"], $vars["sat-cr-min"], $vars["sat-cr-max"], $vars["sat-wr-min"], $vars["sat-wr-max"], $vars["act-min"], $vars["act-max"], $vars["act-en-min"], $vars["act-en-max"], $vars["act-mt-min"], $vars["act-mt-max"], $vars["act-wr-min"], $vars["act-wr-max"]);
+  $stmt->bind_result($vars["loc-type"], $vars["loc-setting"], $vars["loc-dist-min"], $vars["loc-dist-max"], $vars["loc-dist-from"], $vars["loc-state"], $vars["level-type"], $vars["level"], $vars["control-type"], $vars["control"], $vars["degrees-type"], $vars["degrees"], $vars["majors-type"], $vars["majors"], $vars["black"], $vars["hospital"], $vars["hospital-missing"], $vars["med-deg"], $vars["med-deg-missing"], $vars["tribal"], $vars["public"], $vars["sat-min"], $vars["sat-max"], $vars["sat-mt-min"], $vars["sat-mt-max"], $vars["sat-cr-min"], $vars["sat-cr-max"], $vars["sat-wr-min"], $vars["sat-wr-max"], $vars["act-min"], $vars["act-max"], $vars["act-en-min"], $vars["act-en-max"], $vars["act-mt-min"], $vars["act-mt-max"], $vars["act-wr-min"], $vars["act-wr-max"], $vars["accept-min"], $vars["accept-max"], $vars["male-min"], $vars["male-max"], $vars["housing"], $vars["housing-missing"], $vars["board"], $vars["board-missing"], $vars["campus-required"], $vars["campus-required-missing"], $vars["dist"]);
   assert($stmt->fetch());
   $stmt->close();
   $vars["loc-setting"] = explode(",", $vars["loc-setting"]);
@@ -124,6 +135,7 @@
   $vars["control"] = explode(",", $vars["control"]);
   $vars["degrees"] = explode(",", $vars["degrees"]);
   $vars["majors"] = explode(",", $vars["majors"]);
+  $vars["dist"] = explode(",", $vars["dist"]);
 
   function valOf($name) {
     global $vars;
@@ -186,6 +198,18 @@
 
   function pub($val) {
     selected('public', $val);
+  }
+
+  function hsn($val) {
+    selected('housing', $val);
+  }
+
+  function brd($val) {
+    selected('board', $val);
+  }
+
+  function crq($val) {
+    selected('campus-required', $val);
   }
 
   function checkedBasic($name) {
@@ -584,50 +608,51 @@
           <table class="scores">
             <?php
               score("accept", "Acceptance Rate", 0, 100);
-              score("males", "Percent Male", 0, 100);
+              score("male", "Percent Male", 0, 100);
             ?>
           </table>
 
           <h2>Campus Life</h2>
           <table>
             <tr>
+              <!-- TODO: implement this part with connection to db -->
               <td><label for="housing">On-Campus Housing Provided:</label></td>
               <td>
                 <select name="housing" id="housing" class="form-control">
-                  <option value="0">No Preference</option>
-                  <option value="1">Yes</option>
-                  <option value="2">No</option>
+                  <option value="0"<?php hsn(0); ?>>No Preference</option>
+                  <option value="1"<?php hsn(1); ?>>Yes</option>
+                  <option value="2"<?php hsn(2); ?>>No</option>
                 </select>
               </td>
             </tr>
             <tr>
-              <td colspan="2"><label><input type="checkbox" name="housing-missing" value="yes" />Include Schools with Unknown Housing Status</label></td>
+              <td colspan="2"><label><input type="checkbox" name="housing-missing" value="yes"<?php checkedBasic('housing-missing'); ?> />Include Schools with Unknown Housing Status</label></td>
             </tr>
             <tr>
               <td><label for="board">Meal Plan Available:</label></td>
               <td>
                 <select name="board" id="board" class="form-control">
-                  <option value="0">No Preference</option>
-                  <option value="1">Yes</option>
-                  <option value="3">No</option>
+                  <option value="0"<?php brd(0); ?>>No Preference</option>
+                  <option value="1"<?php brd(1); ?>>Yes</option>
+                  <option value="3"<?php brd(3); ?>>No</option>
                 </select>
               </td>
             </tr>
             <tr>
-              <td colspan="2"><label><input type="checkbox" name="board-missing" value="yes" />Include Schools with Unknown Meal Plan Status</label></td>
+              <td colspan="2"><label><input type="checkbox" name="board-missing" value="yes"<?php checkedBasic('board-missing'); ?> />Include Schools with Unknown Meal Plan Status</label></td>
             </tr>
             <tr>
               <td><label for="campus-required">Required to Live on Campus:</label></td>
               <td>
                 <select name="campus-required" id="campus-required" class="form-control">
-                  <option value="0">No Preference</option>
-                  <option value="1">Yes</option>
-                  <option value="2">No</option>
+                  <option value="0"<?php crq(0); ?>>No Preference</option>
+                  <option value="1"<?php crq(1); ?>>Yes</option>
+                  <option value="2"<?php crq(2); ?>>No</option>
                 </select>
               </td>
             </tr>
             <tr>
-              <td colspan="2"><label><input type="checkbox" name="campus-required-missing" value="yes" />Include Schools with Unknown Requirement</label></td>
+              <td colspan="2"><label><input type="checkbox" name="campus-required-missing" value="yes"<?php checkedBasic('campus-required-missing'); ?> />Include Schools with Unknown Requirement</label></td>
             </tr>
           </table>
 
