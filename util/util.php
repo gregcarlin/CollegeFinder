@@ -110,4 +110,26 @@ function signIn($email, $pass) {
   }
 }
 
+// returns the lat-long of an address or zip code
+function locate($address) {
+  $url = "http://maps.googleapis.com/maps/api/geocode/xml?sensor=true&address=" . urlencode($address);
+  $xml = simplexml_load_file($url);
+  if($xml->status == "OK") {
+    $loc = $xml->result->geometry->location;
+    return array("lat" => $loc->lat, "long" => $loc->lng);
+  }
+  return array("lat" => 0.0, "long" => 0.0);
+}
+
+// distance (in miles) between two lat-long points
+// adapted from http://www.geodatasource.com/developers/php
+function distance($lat1, $lon1, $lat2, $lon2, $unit) {
+
+  $theta = $lon1 - $lon2;
+  $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
+  $dist = acos($dist);
+  $dist = rad2deg($dist);
+  return $dist * 60 * 1.1515;
+}
+
 ?>
