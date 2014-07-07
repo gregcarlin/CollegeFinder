@@ -1,5 +1,6 @@
 <?php
   $page = 2;
+  $extra = '<link href="styles/schools.css" rel="stylesheet" />';
   require_once "util/header-signedin.php";
 
   $stmt = $mysql->prepare("SELECT * FROM `prefs` WHERE `id` = ?");
@@ -27,7 +28,7 @@
 
   $loc = locate($result["loc_dist_addr"]);
   $haver = "( 3959 * acos( cos( radians(" . $loc["lat"] . ") ) * cos( radians( `schools`.`latitude` ) ) * cos( radians( `schools`.`longitude` ) - radians(" . $loc["long"] . ") ) + sin( radians(" . $loc["lat"] . ") ) * sin( radians( `schools`.`latitude` ) ) ) ) AS `distance`";
-  $query = "SELECT DISTINCT `schools`.`id`,`schools`.`name`,`schools`.`address`,`schools`.`city`,`schools`.`state`,`schools`.`website`,`schools`.`latitude`,`schools`.`longitude`," . $haver . " FROM `schools`,`supplementary`,`major_offerings` WHERE `schools`.`id` = `supplementary`.`id` AND `schools`.`id` = `major_offerings`.`school_id` AND ";
+  $query = "SELECT DISTINCT `schools`.`id`,`schools`.`name`,`schools`.`city`,`schools`.`state`,`schools`.`website`,`supplementary`.`sat_cr_25`,`supplementary`.`sat_cr_75`,`supplementary`.`sat_mt_25`,`supplementary`.`sat_mt_75`,`supplementary`.`sat_wr_25`,`supplementary`.`sat_wr_75`,`supplementary`.`act_cm_25`,`supplementary`.`act_cm_75`,`supplementary`.`applied`,`supplementary`.`admitted`," . $haver . " FROM `schools`,`supplementary`,`major_offerings` WHERE `schools`.`id` = `supplementary`.`id` AND `schools`.`id` = `major_offerings`.`school_id` AND ";
   
   $query .= "(";
 
@@ -68,13 +69,21 @@
 
   $query = filterBasic("majors", "major_id", $query, "major_offerings");
 
+  $query .= ") AND (";
+
+  // TODO: prevent SQL injections
+  $query .= "`supplementary`.`sat_cr_25`+`supplementary`.`sat_mt_25`+`supplementary`.`sat_wr_25` >= " . $result["sat_min"];
+  $query .= ") AND (";
+  $query .= "`supplementary`.`sat_cr_25`+`supplementary`.`sat_mt_25`+`supplementary`.`sat_wr_25` <= " . $result["sat_max"];
+  //$query .= "`supplementary`.`sat_cr_25`"
+
   $query .= ")";
 
   if($result["loc_type"] == 'distance') {
     $query .= " HAVING `distance` >= " . $result["loc_dist_min"] . " AND `distance` <= " . $result["loc_dist_max"];
   }
 
-  echo $query . "<br />";
+  //echo $query . "<br />";
   $stmt = $mysql->prepare($query);
   $stmt->execute();
 
@@ -96,14 +105,25 @@
         <h1>View selected schools</h1>
 
         <table>
+          <tr>
+            <th>Name</th>
+            <th>City</th>
+            <th>State</th>
+            <th>SAT Range</th>
+            <th>ACT Range</th>
+            <th>Acceptance</th>
+          </tr>
           <?php
             //var_dump($schools);
             foreach($schools as $school) {
               echo '<tr>';
-              echo '<td>' . $school["name"] . '</td>';
+              echo '<td><a href="http://' . $school["website"] . '">' . $school["name"] . '</a></td>';
               //echo '<td>' . $school["address"] . '</td>';
               echo '<td>' . $school["city"] . '</td>';
               echo '<td>' . $school["state"] . '</td>';
+              echo '<td>' . ($school["sat_cr_25"]+$school["sat_mt_25"]+$school["sat_wr_25"]) . ' - ' . ($school["sat_cr_75"]+$school["sat_mt_75"]+$school["sat_wr_75"]) . '</td>';
+              echo '<td>' . $school["act_cm_25"] . ' - ' . $school["act_cm_75"] . '</td>';
+              echo '<td>' . round($school["admitted"] / $school["applied"] * 100) . '%</td>';
               echo '</tr>';
             }
           ?>
