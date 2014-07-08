@@ -110,14 +110,27 @@ function signIn($email, $pass) {
   }
 }
 
+function handleError($errno, $errstr, $errfile, $errline, array $errcontext) {
+  if(error_reporting() === 0) return false;
+
+  throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+}
+
 // returns the lat-long of an address or zip code
 function locate($address) {
-  $url = "http://maps.googleapis.com/maps/api/geocode/xml?sensor=true&address=" . urlencode($address);
-  $xml = simplexml_load_file($url);
-  if($xml->status == "OK") {
-    $loc = $xml->result->geometry->location;
-    return array("lat" => $loc->lat, "long" => $loc->lng);
+  set_error_handler('handleError');
+  try {
+    $url = "http://maps.googleapis.com/maps/api/geocode/xml?sensor=true&address=" . urlencode($address);
+    $xml = simplexml_load_file($url);
+    if($xml->status == "OK") {
+      $loc = $xml->result->geometry->location;
+      restore_error_handler();
+      return array("lat" => $loc->lat, "long" => $loc->lng);
+    }
+  } catch (ErrorException $e) {
+
   }
+  restore_error_handler();
   return array("lat" => 0.0, "long" => 0.0);
 }
 
