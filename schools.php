@@ -6,7 +6,7 @@
   $stmt = $mysql->prepare("SELECT * FROM `prefs` WHERE `id` = ?");
   $stmt->bind_param("i", $id);
   $stmt->execute();
-  $result = $stmt->get_result()->fetch_assoc();
+  $result = getResult($stmt)[0];
   $stmt->close();
 
   function filterBasic($prefsName, $dbName, $query, $table="schools") {
@@ -51,7 +51,7 @@
   $haver = "( 3959 * acos( cos( radians(" . $loc["lat"] . ") ) * cos( radians( `schools`.`latitude` ) ) * cos( radians( `schools`.`longitude` ) - radians(" . $loc["long"] . ") ) + sin( radians(" . $loc["lat"] . ") ) * sin( radians( `schools`.`latitude` ) ) ) ) AS `distance`";
   $satMin = "(`supplementary`.`sat_cr_25`+`supplementary`.`sat_mt_25`+`supplementary`.`sat_wr_25`) as `sat_25`";
   $satMax = "(`supplementary`.`sat_cr_75`+`supplementary`.`sat_mt_75`+`supplementary`.`sat_wr_75`) as `sat_75`";
-  $query = "SELECT DISTINCT `schools`.`id`,`schools`.`name`,`schools`.`city`,`schools`.`state`,`schools`.`website`,`supplementary`.`sat_cr_25`,`supplementary`.`sat_cr_75`,`supplementary`.`sat_mt_25`,`supplementary`.`sat_mt_75`,`supplementary`.`sat_wr_25`,`supplementary`.`sat_wr_75`,`supplementary`.`act_cm_25`,`supplementary`.`act_cm_75`,`supplementary`.`applied`,`supplementary`.`admitted`," . $haver . "," . $satMin . "," . $satMax . " FROM `schools`,`supplementary`,`major_offerings` WHERE `schools`.`id` = `supplementary`.`id` AND `schools`.`id` = `major_offerings`.`school_id` AND ";
+  $query = "SELECT DISTINCT `schools`.`id`,`schools`.`name`,`schools`.`city`,`schools`.`state`,`supplementary`.`sat_cr_25`,`supplementary`.`sat_cr_75`,`supplementary`.`sat_mt_25`,`supplementary`.`sat_mt_75`,`supplementary`.`sat_wr_25`,`supplementary`.`sat_wr_75`,`supplementary`.`act_cm_25`,`supplementary`.`act_cm_75`,`supplementary`.`applied`,`supplementary`.`admitted`," . $haver . "," . $satMin . "," . $satMax . " FROM `schools`,`supplementary`,`major_offerings` WHERE `schools`.`id` = `supplementary`.`id` AND `schools`.`id` = `major_offerings`.`school_id` AND ";
   
   $query .= "(";
 
@@ -122,20 +122,11 @@
   $query = filterRange("sat", "sat", $query);
 
 
-  echo $query . "<br />";
+  //echo $query . "<br />";
   $stmt = $mysql->prepare($query);
   $stmt->execute();
-
-  $schools = array();
-  $rs = $stmt->get_result();
-  $school = $rs->fetch_assoc();
-  while($school != NULL) {
-
-    array_push($schools, $school);
-
-    $school = $rs->fetch_assoc();
-
-  }
+  $schools = getResult($stmt);
+  $stmt->close();
 ?>
 
     <div class="container">
@@ -161,7 +152,7 @@
           <?php
             foreach($schools as $school) {
               echo '<tr>';
-              echo '<td><a href="http://' . $school["website"] . '">' . $school["name"] . '</a></td>';
+              echo '<td><a href="school.php?id=' . $school["id"] . '">' . $school["name"] . '</a></td>';
               echo '<td>' . $school["city"] . '</td>';
               echo '<td>' . $school["state"] . '</td>';
               $sat25 = $school["sat_cr_25"]+$school["sat_mt_25"]+$school["sat_wr_25"];
@@ -184,6 +175,5 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="js/jquery.min.js"></script>
     <script src="bootstrap/js/bootstrap.min.js"></script>
-    <script src="js/dashboard.js"></script>
   </body>
 </html>

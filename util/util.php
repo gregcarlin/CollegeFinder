@@ -64,6 +64,31 @@ function bInt($name) {
   }
 }
 
+// returns the value of the given variable unless it is empty, in which case it returns name + Unknown
+function h($var, $name=NULL) {
+  if($var) return $var;
+  return $name == NULL ? "Unknown" : ($name . " Unknown");
+}
+
+// formats a phone number for humans to read
+function p($num) {
+  if(!$num) return $num;
+  $len = strlen($num);
+  $rt = substr($num, $len - 4);
+  $rt = substr($num, $len - 7, 3) . "-" . $rt;
+  if($len > 7) {
+    $rt = "(" . substr($num, $len - 10, 3) . ") " . $rt;
+    if($len > 10) {
+      $rt = substr($num, $len - 10, 1) . " " . $rt;
+    }
+  }
+  return $rt;
+}
+
+function u($url, $name) {
+  return $url ? ('<a href="http://' . $url . '">' . $name . '</a>') : ($name . "Unknown");
+}
+
 // interprets a checkbox sent via POST
 function isChecked($name) {
   return isset($_POST[$name]);
@@ -132,6 +157,27 @@ function locate($address) {
   }
   restore_error_handler();
   return array("lat" => 0.0, "long" => 0.0);
+}
+
+// returns an array of the results of a mysql query as arrays. query should be executed already.
+function getResult($stmt) {
+  $meta = $stmt->result_metadata(); 
+  while ($field = $meta->fetch_field()) 
+  { 
+      $params[] = &$row[$field->name]; 
+  } 
+
+  call_user_func_array(array($stmt, 'bind_result'), $params); 
+
+  while ($stmt->fetch()) { 
+      foreach($row as $key => $val) 
+      { 
+          $c[$key] = $val; 
+      } 
+      $result[] = $c; 
+  }
+
+  return isset($result) ? $result : NULL;
 }
 
 ?>
