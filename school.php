@@ -64,17 +64,6 @@
           <div class="mid">
             <h2>Statistics</h2>
             <?php
-              /*echo "<p>";
-              echo "Applicants: " . h($result["applied"]) . "<br />";
-              echo "Admitted: " . h($result["admitted"]) . "<br />";
-              $accept = round($result["admitted"] / $result["applied"] * 100);
-              echo "Acceptance Rate: " . ($accept ? ($accept . "%") : "Unknown") . "<br />";
-              echo "Full-Time Enrolled: " . h($result["enroll_ft"]) . "<br />";
-              echo "Part-Time Enrolled: " . h($result["enroll_pt"]) . "<br />";
-              $enroll = round($result["enroll"] / $result["admitted"] * 100);
-              echo "Enroll Rate: " . ($enroll ? ($enroll . "%") : "Unknown");
-              echo "</p>";*/
-
               echo "<table>";
               echo "<tr><td>Applicants:</td><td>" . h($result["applied"]) . "</td></tr>";
               echo "<tr><td>Admitted:</td><td>" . h($result["admitted"]) . "</td></tr>";
@@ -86,27 +75,32 @@
               echo "<tr><td>Enroll Rate:</td><td>" . ($enroll ? ($enroll . "%") : "Unknown") . "</td></tr>";
               echo "</table>";
 
-              echo "<p>";
-              echo "Male Applicants: " . h($result["applied_m"]) . "<br />";
-              echo "Admitted Males: " . h($result["admit_m"]) . "<br />";
+              echo "<table>";
+              echo "<tr><td>Male Applicants:</td><td>" . h($result["applied_m"]) . "</td></tr>";
+              echo "<tr><td>Admitted Males:</td><td>" . h($result["admit_m"]) . "</td></tr>";
               $acceptM = round($result["admit_m"] / $result["applied_m"] * 100);
-              echo "Male Acceptance Rate: " . ($acceptM ? ($acceptM . "%") : "Unknown") . "<br />";
-              echo "Full-Time Enrolled Males: " . h($result["enroll_full_m"]) . "<br />";
-              echo "Part-Time Enrolled Males: " . h($result["enroll_part_m"]) . "<br />";
+              echo "<tr><td>Male Acceptance Rate:</td><td>" . ($acceptM ? ($acceptM . "%") : "Unknown") . "</td></tr>";
+              echo "<tr><td>Full-Time Enrolled Males:</td><td>" . h($result["enroll_full_m"]) . "</td></tr>";
+              echo "<tr><td>Part-Time Enrolled Males:</td><td>" . h($result["enroll_part_m"]) . "</td></tr>";
               $enrollM = round($result["enroll_m"] / $result["admit_m"] * 100);
-              echo "Male Enroll Rate: " . ($enrollM ? ($enrollM . "%") : "Unknown");
-              echo "</p>";
+              echo "<tr><td>Male Enroll Rate:</td><td>" . ($enrollM ? ($enrollM . "%") : "Unknown") . "</td></tr>";
+              echo "</table>";
 
-              echo "<p>";
-              echo "Female Applicants: " . h($result["applied_f"]) . "<br />";
-              echo "Admitted Females: " . h($result["admit_f"]) . "<br />";
+              echo "<table>";
+              echo "<tr><td>Female Applicants:</td><td>" . h($result["applied_f"]) . "</td></tr>";
+              echo "<tr><td>Admitted Females:</td><td>" . h($result["admit_f"]) . "</td></tr>";
               $acceptF = round($result["admit_f"] / $result["applied_f"] * 100);
-              echo "Female Acceptance Rate: " . ($acceptF ? ($acceptF . "%") : "Unknown") . "<br />";
-              echo "Full-Time Enrolled Females: " . h($result["enroll_full_f"]) . "<br />";
-              echo "Part-Time Enrolled Females: " . h($result["enroll_part_f"]) . "<br />";
+              echo "<tr><td>Female Acceptance Rate:</td><td>" . ($acceptF ? ($acceptF . "%") : "Unknown") . "</td></tr>";
+              echo "<tr><td>Full-Time Enrolled Females:</td><td>" . h($result["enroll_full_f"]) . "</td></tr>";
+              echo "<tr><td>Part-Time Enrolled Females:</td><td>" . h($result["enroll_part_f"]) . "</td></tr>";
               $enrollF = round($result["enroll_f"] / $result["admit_f"] * 100);
-              echo "Female Enroll Rate: " . ($enrollF ? ($enrollF . "%") : "Unknown");
-              echo "</p>";
+              echo "<tr><td>Female Enroll Rate:</td><td>" . ($enrollF ? ($enrollF . "%") : "Unknown") . "</td></tr>";
+              echo "</table>";
+
+              echo "<table>";
+              $disabled = round($result["disabled"] * 100);
+              echo "<tr><td>Disabled:</td><td>" . ($disabled ? ($disabled . "%") : "Unknown") . "</td></tr>";
+              echo "</table>";
             ?>
           </div>
           <div class="right">
@@ -119,6 +113,9 @@
               echo $controlArr[$result["control"]] . "<br />";
               $maxDegArr = array(11 => "Doctor's - Research/Scholarship and Professional Practice", 12 => "Doctor's - Research/Scholarship", 13 => "Doctor's - Professional Practice", 14 => "Doctor's", 20 => "Master's", 30 => "Bachelor's", 40 => "Associate's", 0 => "None", -3 => "Unknown");
               echo "Highest Degree Offered: " . $maxDegArr[$result["max_degree"]] . "<br />";
+              echo "</p>";
+
+              echo "<p>";
               echo ($result["historically_black"] ? "" : "Not ") . "Historically Black<br />";
               $hosArr = array(1 => "Has a Hospital", 2 => "Does not have a Hospital", -1 => "Hospital Presence Unknown");
               $hosArr[-2] = $hosArr[-1];
@@ -128,6 +125,27 @@
               $closed = $result["closed"];
               echo ($closed == NULL ? ("Currently Open") : ("Closed on " . $closed)) . "<br />";
               echo ($result["land_grant"] ? "A" : "Not a") . " Land Grant University<br />";
+              if($result["all_dist"] == 1) {
+                echo "All Programs Offered via Distance";
+              } else if($result["under_dist"] == 1) {
+                echo "Undergraduate Programs Offered via Distance";
+              } else if($result["grad_dist"] == 1) {
+                echo "Graduate Programs Offered via Distance";
+              } else if($result["no_dist"] == 1) {
+                echo "No Programs Offered via Distance";
+              } else {
+                echo "Programs Offered via Distance Unknown";
+              }
+              echo "</p>";
+
+              echo "<p>";
+              $boardArr = array(1 => "Offers a Meal Plan", 3 => "Does not Offer a Meal Plan", -1 => "Meal Plan Presence Unknown");
+              $boardArr[2] = $boardArr[1];
+              $boardArr[-2] = $boardArr[-1];
+              echo $boardArr[$result["board_provided"]] . "<br />";
+              $campArr = array(1 => "Required to Live on Campus", 2 => "Not Required to Live on Campus", -1 => "Campus Requirement Unknown");
+              $campArr[-2] = $campArr[-1];
+              echo $campArr[$result["campus_required"]] . "<br />";
               echo "</p>";
             ?>
 

@@ -12,7 +12,7 @@
 }
 
 table {
-  /*width: 90%;*/
+  width: 95%;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 10px;
@@ -29,6 +29,7 @@ table td {
 table td:nth-child(1) {
   text-align: right;
   font-weight: 500;
+  width: 70%;
 }
 
 table td:nth-child(2) {
