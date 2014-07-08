@@ -86,7 +86,7 @@ function p($num) {
 }
 
 function u($url, $name) {
-  return $url ? ('<a href="http://' . $url . '">' . $name . '</a>') : ($name . "Unknown");
+  return $url ? ('<a href="http://' . $url . '">' . $name . '</a>') : ($name . " Unknown");
 }
 
 // interprets a checkbox sent via POST

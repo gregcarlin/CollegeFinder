@@ -3,7 +3,7 @@ table {
 }
 
 table tr:nth-child(even) {
-  background-color: #DDD;
+  background-color: #EEE;
 }
 
 table td, table th {
