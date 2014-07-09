@@ -85,8 +85,20 @@ function p($num) {
   return $rt;
 }
 
+// returns a link to the given url with the given name if it is not null, otherwise returns Unknown
 function u($url, $name) {
   return $url ? ('<a href="http://' . $url . '">' . $name . '</a>') : ($name . " Unknown");
+}
+
+// returns a range if both min and max are not null, otherwise returns Unknown
+function r($min, $max) {
+  return ($min && $max) ? ($min . " - " . $max) : "Unknown";
+}
+
+// like h(), but adds a $ before the value if known
+function m($var, $name=NULL) {
+  if($var) return "$" . $var;
+  return $name == NULL ? "Unknown" : ($name . " Unknown");
 }
 
 // interprets a checkbox sent via POST

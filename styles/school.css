@@ -29,9 +29,14 @@ table td {
 table td:nth-child(1) {
   text-align: right;
   font-weight: 500;
-  width: 70%;
+  width: 65%;
 }
 
 table td:nth-child(2) {
   text-align: left;
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 0;
 }

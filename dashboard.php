@@ -671,7 +671,7 @@
               </td>
             </tr>
             <tr>
-              <td colspan="2"><label><input type="checkbox" name="dist-missing" value="yes" />Include Schools with Unknown Distance Status</label></td>
+              <td colspan="2"><?php checkBox("missing", "Include Schools with Unknown Distance Status", "dist"); ?></td>
             </tr>
           </table>
 

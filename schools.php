@@ -41,6 +41,25 @@
     return $query;
   }
 
+  function filterOption2($prefsName, $dbName, $query, $table="schools") {
+    global $result;
+    switch($result[$prefsName]) {
+      case 0:
+      default:
+        $query .= "`" . $table . "`.`" . $dbName . "` > 0";
+        break;
+      case 1:
+      case 2:
+      case 3:
+        $query .= "`" . $table . "`.`" . $dbName . "` = " . $result[$prefsName];
+        break;
+    }
+    if(isset($result[$prefsName . "_missing"]) && $result[$prefsName . "_missing"] == 1) {
+      $query .= " OR `" . $table . "`.`" . $dbName . "` < 0";
+    }
+    return $query;
+  }
+
   function filterRange($prefsName, $dbName, $query, $table="schools") {
     global $result;
     $query .= "((`" . $dbName . "_25` >= " . $result[$prefsName . "_min"] . " AND `" . $dbName . "_25` <= " . $result[$prefsName . "_max"] . ") OR (`" . $dbName . "_75` >= " . $result[$prefsName . "_min"] . " AND `" . $dbName . "_75` <= " . $result[$prefsName . "_max"] . ") OR (`" . $dbName . "_25` <= " . $result[$prefsName . "_min"] . " AND `" . $dbName . "_75` >= " . $result[$prefsName . "_max"] . "))";
@@ -94,6 +113,18 @@
 
   $query .= ") AND (";
 
+  $query = filterOption("black", "historically_black", $query);
+  $query .= ") AND (";
+  $query = filterOption2("hospital", "has_hospital", $query);
+  $query .= ") AND (";
+  $query = filterOption2("med_deg", "grants_med_deg", $query);
+  $query .= ") AND (";
+  $query = filterOption("tribal", "tribal", $query);
+  $query .= ") AND (";
+  $query = filterOption("public", "open_to_public", $query);
+
+  $query .= ") AND (";
+
   // TODO: prevent SQL injections
   $query = filterRange("sat_cr", "sat_cr", $query);
   $query .= ") AND (";
@@ -111,7 +142,48 @@
 
   $query .= ") AND (";
 
-  $query = filterOption("black", "historically_black", $query);
+  $query .= "(`admitted`/`applied`) >= " . ($result["accept_min"]/100.0) . " AND (`admitted`/`applied`) <= " . ($result["accept_max"]/100.0);
+
+  $query .= ") AND (";
+
+  $query .= "(`enroll_m`/`enroll`) >= " . ($result["male_min"]/100.0) . " AND (`enroll_m`/`enroll`) <= " . ($result["male_max"]/100.0);
+
+  $query .= ") AND (";
+
+  $query = filterOption2("housing", "campus_housing", $query, "supplementary");
+  $query .= ") AND (";
+  $query = filterOption2("board", "board_provided", $query, "supplementary");
+  $query .= ") AND (";
+  $query = filterOption2("campus_required", "campus_required", $query, "supplementary");
+
+  $query .= ") AND (";
+
+  $subquery = "";
+  foreach(explode(",", $result["dist"]) as $item) {
+    $col = NULL;
+    $cond = " = 1";
+    switch($item) {
+      case "all":
+        $col = "all_dist";
+        break;
+      case "undergrad":
+        $col = "under_dist";
+        break;
+      case "graduate":
+        $col = "grad_dist";
+        break;
+      case "none":
+        $col = "no_dist";
+        break;
+      case "missing":
+        $col = "no_dist";
+        $cond = "< 0";
+      default:
+        continue;
+    }
+    $subquery .= "`supplementary`.`" . $col . "` " . $cond . " OR ";
+  }
+  $query .= substr($subquery, 0, strlen($subquery) - 4);
 
   $query .= ") HAVING ";
 
@@ -144,27 +216,27 @@
               <th>ACT Range</th>
               <th>Acceptance</th>
             </tr>
+            <?php
+              foreach($schools as $school) {
+                echo '<tr>';
+                echo '<td><a href="school.php?id=' . $school["id"] . '">' . $school["name"] . '</a></td>';
+                echo '<td>' . $school["city"] . '</td>';
+                echo '<td>' . $school["state"] . '</td>';
+                $sat25 = $school["sat_cr_25"]+$school["sat_mt_25"]+$school["sat_wr_25"];
+                $sat75 = $school["sat_cr_75"]+$school["sat_mt_75"]+$school["sat_wr_75"];
+                echo '<td>' . (($sat25 == NULL || $sat75 == NULL) ? 'Unknown' : ($sat25 . ' - ' . $sat75)) . '</td>';
+                $act25 = $school["act_cm_25"];
+                $act75 = $school["act_cm_75"];
+                echo '<td>' . (($act25 == NULL || $act75 == NULL) ? 'Unknown' : ($act25 . ' - ' . $act75)) . '</td>';
+                echo '<td>' . round($school["admitted"] / $school["applied"] * 100) . '%</td>';
+                echo '</tr>';
+              }
+            ?>
           <?php else: ?>
             <tr>
               <td>No results found.</td>
             </tr>
           <?php endif; ?>
-          <?php
-            foreach($schools as $school) {
-              echo '<tr>';
-              echo '<td><a href="school.php?id=' . $school["id"] . '">' . $school["name"] . '</a></td>';
-              echo '<td>' . $school["city"] . '</td>';
-              echo '<td>' . $school["state"] . '</td>';
-              $sat25 = $school["sat_cr_25"]+$school["sat_mt_25"]+$school["sat_wr_25"];
-              $sat75 = $school["sat_cr_75"]+$school["sat_mt_75"]+$school["sat_wr_75"];
-              echo '<td>' . (($sat25 == NULL || $sat75 == NULL) ? 'Unknown' : ($sat25 . ' - ' . $sat75)) . '</td>';
-              $act25 = $school["act_cm_25"];
-              $act75 = $school["act_cm_75"];
-              echo '<td>' . (($act25 == NULL || $act75 == NULL) ? 'Unknown' : ($act25 . ' - ' . $act75)) . '</td>';
-              echo '<td>' . round($school["admitted"] / $school["applied"] * 100) . '%</td>';
-              echo '</tr>';
-            }
-          ?>
         </table>
       </div>
 
