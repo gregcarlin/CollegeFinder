@@ -32,9 +32,10 @@
               $split = preg_split("/\|/", $result["alias"]);
               $len = count($split);
               for($i = 0; $i<$len-1; $i++) {
-                $all .= '&ldquo;' . trim($split[$i]) . '&rdquo;, and ';
+                $all .= '&ldquo;' . trim($split[$i]) . '&rdquo;, ';
               }
-              echo substr($all, 0, strlen($all) - 6) . ' and ' . '&ldquo;' . trim($split[$len-1]) . '&rdquo;';
+              if($len > 1) $all .= 'and ';
+              echo $all . '&ldquo;' . trim($split[$len-1]) . '&rdquo;';
               echo "</div>";
             }
           ?>
@@ -65,7 +66,7 @@
             <h2>Statistics</h2>
             <?php
               echo "<table>";
-              echo "<tr><td>Applicants:</td><td>" . h($result["applied"]) . "</td></tr>";
+              echo "<tr><td>Applicants:</td><td>" . h($result["applied"]) . '</td></tr>';
               echo "<tr><td>Admitted:</td><td>" . h($result["admitted"]) . "</td></tr>";
               $accept = round($result["admitted"] / $result["applied"] * 100);
               echo "<tr><td>Acceptance Rate:</td><td>" . ($accept ? ($accept . "%") : "Unknown") . "</td></tr>";
@@ -107,7 +108,7 @@
               echo "<table>";
               $sat25 = $result["sat_cr_25"] + $result["sat_mt_25"] + $result["sat_wr_25"];
               $sat75 = $result["sat_cr_75"] + $result["sat_mt_75"] + $result["sat_wr_75"];
-              echo "<tr><td>SAT Range:</td><td>" . r($sat25, $sat75) . "</td></tr>";
+              echo "<tr><td>SAT Range:</td><td>" . r($sat25, $sat75) . '<a class="help"></a></td></tr>';
               echo "<tr><td>SAT Critical Reading:</td><td>" . r($result["sat_cr_25"], $result["sat_cr_75"]) . "</td></tr>";
               echo "<tr><td>SAT Math:</td><td>" . r($result["sat_mt_25"], $result["sat_mt_75"]) . "</td></tr>";
               echo "<tr><td>SAT Writing:</td><td>" . r($result["sat_wr_25"], $result["sat_wr_75"]) . "</td></tr>";
@@ -125,7 +126,7 @@
               echo "<tr><td>Dormitory Capacity:</td><td>" . h($result["room_cap"]) . "</td></tr>";
               echo "<tr><td>Cost of Room:</td><td>" . m($result["room_cost"]) . "</td></tr>";
               echo "<tr><td>Cost of Board:</td><td>" . m($result["board_cost"]) . "</td></tr>";
-              echo "<tr><td>Total Tuition:</td><td>" . h($result["total_cost"]) . "</td></tr>";
+              echo "<tr><td>Cost of Both:</td><td>" . h($result["total_cost"]) . "</td></tr>";
               echo "</table>";
             ?>
           </div>

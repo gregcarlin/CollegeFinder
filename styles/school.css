@@ -29,7 +29,7 @@ table td {
 table td:nth-child(1) {
   text-align: right;
   font-weight: 500;
-  width: 65%;
+  width: 60%;
 }
 
 table td:nth-child(2) {
@@ -39,4 +39,17 @@ table td:nth-child(2) {
 ul {
   list-style-type: none;
   padding-left: 0;
+}
+
+a.help {
+  background-image: url('../images/info12.png');
+  background-repeat: no-repeat;
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-left: 4px;
+}
+
+a.help:hover {
+  cursor: pointer;
 }
