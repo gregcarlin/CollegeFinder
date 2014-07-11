@@ -68,8 +68,9 @@
           <ul class="nav navbar-nav">
             <li<?php c(0); ?>><a href="dashboard.php">Home</a></li>
             <li<?php c(1); ?>><a href="info.php">Info</a></li>
-            <li<?php c(2); ?>><a href="schools.php">Schools</a></li>
-            <li<?php c(3); ?>><a href="visiting.php">Plan a Visit</a></li>
+            <li<?php c(2); ?>><a href="search.php">Search</a></li>
+            <li<?php c(3); ?>><a href="lists.php">Lists</a></li>
+            <li<?php c(4); ?>><a href="visiting.php">Plan a Visit</a></li>
           </ul>
           <form class="navbar-right navbar-form" role="form" action="sign-out.php" method="post">
             <button type="submit" class="btn btn-success">Sign Out</button>

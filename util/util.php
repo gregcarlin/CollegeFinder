@@ -192,4 +192,42 @@ function getResult($stmt) {
   return isset($result) ? $result : NULL;
 }
 
+function formatSchool($school) {
+  global $mysql, $id;
+  $format = '<tr id="row-' . $school['id'] . '">';
+
+  $format .= '<td><a href="school.php?id=' . $school["id"] . '">' . $school["name"] . '</a></td>';
+  $format .= '<td>' . $school["city"] . '</td>';
+  $format .= '<td>' . $school["state"] . '</td>';
+
+  $sat25 = $school["sat_cr_25"]+$school["sat_mt_25"]+$school["sat_wr_25"];
+  $sat75 = $school["sat_cr_75"]+$school["sat_mt_75"]+$school["sat_wr_75"];
+  $format .= '<td>' . (($sat25 == NULL || $sat75 == NULL) ? 'Unknown' : ($sat25 . ' - ' . $sat75)) . '</td>';
+
+  $act25 = $school["act_cm_25"];
+  $act75 = $school["act_cm_75"];
+  $format .= '<td>' . (($act25 == NULL || $act75 == NULL) ? 'Unknown' : ($act25 . ' - ' . $act75)) . '</td>';
+
+  $admit = $school["admitted"];
+  $apply = $school["applied"];
+  $format .= '<td>' . (($admit == NULL || $apply == NULL) ? 'Unknown' : (round($admit / $apply * 100) . '%')) . '</td>';
+
+  $stmt = $mysql->prepare("SELECT `list_id` FROM `lists` WHERE `student_id` = ? AND `school_id` = ?");
+  $stmt->bind_param("ii", $id, $school['id']);
+  $stmt->execute();
+  $listID = NULL;
+  $stmt->bind_result($listID);
+  $lists = array(0 => "Reach", 1 => "Target", 2 => "Safety");
+  if($stmt->fetch()) {
+    $format .= '<td class="save"><span>' . $lists[$listID] . '</span><div class="list-popup"><a onclick="removeFromList(' . $school['id'] . ',' . $listID . ')">Remove</a></div></td>';
+  } else {
+    $format .= '<td class="save"><span>Save &raquo;</span><div class="list-popup"><a onclick="addToList(' . $school['id'] . ',0)">Reach</a><a onclick="addToList(' . $school['id'] . ',1)">Target</a><a onclick="addToList(' . $school['id'] . ',2)">Safety</a></div></td>';
+  }
+  $stmt->close();
+
+  $format .= '</tr>';
+
+  return $format;
+}
+
 ?>

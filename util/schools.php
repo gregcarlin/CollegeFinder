@@ -1,7 +1,8 @@
 <?php
-  $page = 2;
-  $extra = '<link href="styles/schools.css" rel="stylesheet" />';
-  require_once "util/header-signedin.php";
+  if(!isset($id)) {
+    header("HTTP/1.0 404 Not Found");
+    die();
+  }
 
   $stmt = $mysql->prepare("SELECT * FROM `prefs` WHERE `id` = ?");
   $stmt->bind_param("i", $id);
@@ -193,12 +194,15 @@
 
   $query = filterRange("sat", "sat", $query);
 
+  $query .= " LIMIT 0,101";
+
 
   //echo $query . "<br />";
   $stmt = $mysql->prepare($query);
   $stmt->execute();
   $schools = getResult($stmt);
   $stmt->close();
+  $count = count($schools);
 ?>
 
     <div class="container">
@@ -206,8 +210,17 @@
       <div class="starter-template">
         <h1>View selected schools</h1>
 
-        <table>
-          <?php if(count($schools) > 0): ?>
+        <?php
+          if($count > 0 && $count <= 100) {
+            echo '<div class="result-count">' . $count . ' results found.</div>';
+          }
+        ?>
+        <table class="results">
+          <?php if($count > 100): ?>
+            <tr>
+              <td>More than 100 results were found. Please narrow your search.</td>
+            </tr>
+          <?php elseif($count > 0): ?>
             <tr>
               <th>Name</th>
               <th>City</th>
@@ -215,21 +228,11 @@
               <th>SAT Range</th>
               <th>ACT Range</th>
               <th>Acceptance</th>
+              <th>List</th>
             </tr>
             <?php
               foreach($schools as $school) {
-                echo '<tr>';
-                echo '<td><a href="school.php?id=' . $school["id"] . '">' . $school["name"] . '</a></td>';
-                echo '<td>' . $school["city"] . '</td>';
-                echo '<td>' . $school["state"] . '</td>';
-                $sat25 = $school["sat_cr_25"]+$school["sat_mt_25"]+$school["sat_wr_25"];
-                $sat75 = $school["sat_cr_75"]+$school["sat_mt_75"]+$school["sat_wr_75"];
-                echo '<td>' . (($sat25 == NULL || $sat75 == NULL) ? 'Unknown' : ($sat25 . ' - ' . $sat75)) . '</td>';
-                $act25 = $school["act_cm_25"];
-                $act75 = $school["act_cm_75"];
-                echo '<td>' . (($act25 == NULL || $act75 == NULL) ? 'Unknown' : ($act25 . ' - ' . $act75)) . '</td>';
-                echo '<td>' . round($school["admitted"] / $school["applied"] * 100) . '%</td>';
-                echo '</tr>';
+                echo formatSchool($school);
               }
             ?>
           <?php else: ?>
@@ -247,5 +250,6 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="js/jquery.min.js"></script>
     <script src="bootstrap/js/bootstrap.min.js"></script>
+    <script src="js/schools.js"></script>
   </body>
 </html>

@@ -101,6 +101,10 @@ label input {
   cursor: pointer;
 }
 
-.success {
-  color: #5cb85c;
+.sbn {
+  margin-top: 10px;
+}
+
+.result-count {
+  text-align: left;
 }
