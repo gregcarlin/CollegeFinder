@@ -192,7 +192,7 @@ function getResult($stmt) {
   return isset($result) ? $result : NULL;
 }
 
-function formatSchool($school) {
+function formatSchool($school, $listPage=false) {
   global $mysql, $id;
   $format = '<tr id="row-' . $school['id'] . '">';
 
@@ -217,11 +217,16 @@ function formatSchool($school) {
   $stmt->execute();
   $listID = NULL;
   $stmt->bind_result($listID);
-  $lists = array(0 => "Reach", 1 => "Target", 2 => "Safety");
-  if($stmt->fetch()) {
-    $format .= '<td class="save"><span>' . $lists[$listID] . '</span><div class="list-popup"><a onclick="removeFromList(' . $school['id'] . ',' . $listID . ')">Remove</a></div></td>';
+  $inList = $stmt->fetch();
+  if($listPage) {
+    $format .= '<td class="save"><a onclick="removeFromList(' . $school['id'] . ',' . $listID . ')">Remove</a></td>';
   } else {
-    $format .= '<td class="save"><span>Save &raquo;</span><div class="list-popup"><a onclick="addToList(' . $school['id'] . ',0)">Reach</a><a onclick="addToList(' . $school['id'] . ',1)">Target</a><a onclick="addToList(' . $school['id'] . ',2)">Safety</a></div></td>';
+    $lists = array(0 => "Reach", 1 => "Target", 2 => "Safety");
+    if($inList) {
+      $format .= '<td class="save"><span>' . $lists[$listID] . '</span><div class="list-popup"><a onclick="removeFromList(' . $school['id'] . ',' . $listID . ')">Remove</a></div></td>';
+    } else {
+      $format .= '<td class="save"><span>Save &raquo;</span><div class="list-popup"><a onclick="addToList(' . $school['id'] . ',0)">Reach</a><a onclick="addToList(' . $school['id'] . ',1)">Target</a><a onclick="addToList(' . $school['id'] . ',2)">Safety</a></div></td>';
+    }
   }
   $stmt->close();
 

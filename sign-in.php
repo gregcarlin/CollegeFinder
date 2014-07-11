@@ -25,6 +25,8 @@
   }
 
   $page = -1;
+  $mode = 2;
+  $title = "Sign In";
   $extra = '<link href="styles/signin.css" rel="stylesheet">';
   require_once "util/header.php";
 ?>

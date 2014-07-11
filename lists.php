@@ -1,7 +1,9 @@
 <?php
   $page = 3;
-  //$extra = '<link href="styles/dash.css" rel="stylesheet" />';
-  require_once "util/header-signedin.php";
+  $mode = 1;
+  $title = 'Lists';
+  $extra = '<link href="styles/lists.css" rel="stylesheet" />';
+  require_once "util/header.php";
 
   $stmt = $mysql->prepare("SELECT * FROM `schools`,`lists`,`supplementary` WHERE `lists`.`student_id` = ? AND `lists`.`school_id` = `schools`.`id` AND `schools`.`id` = `supplementary`.`id`");
   $stmt->bind_param("i", $id);
@@ -36,7 +38,7 @@
               echo '<th>Acceptance</th>';
               echo '</tr>';
               foreach($lists[$i] as $school) {
-                echo formatSchool($school);
+                echo formatSchool($school, true);
               }
               echo '</table>';
             } else {

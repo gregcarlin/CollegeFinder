@@ -1,5 +1,6 @@
 <?php
   $page = 0;
+  $mode = 2;
   $extra = '<link href="styles/landing.css" rel="stylesheet" />';
   require_once "util/header.php";
 ?>

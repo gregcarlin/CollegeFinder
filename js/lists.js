@@ -14,5 +14,4 @@ function removeFromList(school, list) {
     }
   });
   $('#row-' + school + ' .save span').html('...');
-  $('#row-' + school + ' .save .list-popup').html('');
 }

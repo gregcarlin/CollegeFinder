@@ -5,8 +5,10 @@
   }
 
   $page = 2;
+  $mode = 0;
+  // TODO title as name of school
   $extra = '<link href="styles/school.css" rel="stylesheet" />';
-  require_once "util/header-signedin.php";
+  require_once "util/header.php";
 
   $stmt = $mysql->prepare("SELECT * FROM `schools`,`supplementary` WHERE `schools`.`id` = `supplementary`.`id` AND `schools`.`id` = ?");
   $stmt->bind_param("i", $_GET['id']);

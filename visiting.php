@@ -1,5 +1,7 @@
 <?php
   $page = 4;
+  $mode = 1;
+  $title = 'Plan a Visit';
   require_once "util/header-signedin.php";
 ?>
 

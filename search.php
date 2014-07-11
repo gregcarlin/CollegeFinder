@@ -1,7 +1,8 @@
 <?php
   $page = 2;
+  $mode = 1; // TODO: remove need to log in
   $extra = '<link href="styles/search.css" rel="stylesheet" />';
-  require_once "util/header-signedin.php";
+  require_once "util/header.php";
 
   function checkBox($value, $title, $name) {
     $val = valOf($name);

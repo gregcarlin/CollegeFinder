@@ -1,7 +1,9 @@
 <?php
   $page = 1;
+  $mode = 1;
+  $title = 'Personal Info';
   $extra = '<link href="styles/info.css" rel="stylesheet" />';
-  require_once "util/header-signedin.php";
+  require_once "util/header.php";
 
   $changes = false;
   $error = 0;
