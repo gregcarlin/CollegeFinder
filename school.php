@@ -4,19 +4,19 @@
     die();
   }
 
-  $page = 2;
-  $mode = 0;
-  // TODO title as name of school
-  $extra = '<link href="styles/school.css" rel="stylesheet" />';
-  require_once "util/header.php";
-
+  require_once "util/util.php";
+  require_once "util/get-db.php";
   $stmt = $mysql->prepare("SELECT * FROM `schools`,`supplementary` WHERE `schools`.`id` = `supplementary`.`id` AND `schools`.`id` = ?");
   $stmt->bind_param("i", $_GET['id']);
   $stmt->execute();
-
   $result = getResult($stmt)[0];
   $stmt->close();
-  //var_dump($result);
+
+  $page = 2;
+  $mode = 0;
+  $title = $result['name'];
+  $extra = '<link href="styles/school.css" rel="stylesheet" />';
+  require_once "util/header.php";
 ?>
 
     <div class="container">
@@ -26,21 +26,6 @@
           School not found. Please <a href="schools.php">go back</a> and try again.
         <?php else: ?>
           <h1><?php echo $result["name"]; ?></h1>
-          <?php
-            if($result["alias"]) {
-              echo "<div>";
-              echo "Also known as ";
-              $all = "";
-              $split = preg_split("/\|/", $result["alias"]);
-              $len = count($split);
-              for($i = 0; $i<$len-1; $i++) {
-                $all .= '&ldquo;' . trim($split[$i]) . '&rdquo;, ';
-              }
-              if($len > 1) $all .= 'and ';
-              echo $all . '&ldquo;' . trim($split[$len-1]) . '&rdquo;';
-              echo "</div>";
-            }
-          ?>
           <div class="left">
             <h2>Location</h2>
             <?php
@@ -200,11 +185,6 @@
       </div>
 
     </div>
-
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="js/jquery.min.js"></script>
-    <script src="bootstrap/js/bootstrap.min.js"></script>
-  </body>
-</html>
+<?php
+  require_once "util/footer.php";
+?>

@@ -14,12 +14,6 @@
       </div>
 
     </div>
-
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="js/jquery.min.js"></script>
-    <script src="bootstrap/js/bootstrap.min.js"></script>
-    <script src="js/dashboard.js"></script>
-  </body>
-</html>
+<?php
+  require_once "util/footer.php";
+?>

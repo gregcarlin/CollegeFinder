@@ -1,7 +1,7 @@
 <?php
-  $page = 0;
-  $title = "Dashboard";
-  $mode = 1;
+  $page = -1;
+  $title = "Attributions";
+  $mode = 0;
   //$extra = '<link href="styles/dash.css" rel="stylesheet" />';
   require_once "util/header.php";
 ?>
@@ -9,12 +9,11 @@
 
       <div class="starter-template">
 
-        TODO
+        TODO: attribute icomoon.io
 
       </div>
 
     </div>
-    <script src="js/dashboard.js"></script>
 <?php
   require_once "util/footer.php";
 ?>
