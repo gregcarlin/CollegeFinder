@@ -19,6 +19,13 @@ body {
   box-shadow: 0 0 10px 0px #555;
 }
 
+.popup .close {
+  background: url('../images/close.png');
+  width: 16px;
+  height: 16px;
+  margin: 5px;
+}
+
 .sign-up-pop {
   width: 400px;
   margin-left: -200px;
@@ -105,6 +112,23 @@ table.results th {
 
 .list-popup a:hover {
   cursor: pointer;
+}
+
+a.help {
+  background-image: url('../images/info.png');
+  background-repeat: no-repeat;
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-left: 4px;
+  position: relative;
+  top: 1px;
+  opacity: .2;
+}
+
+a.help:hover {
+  cursor: pointer;
+  opacity: .5;
 }
 
 .footer {

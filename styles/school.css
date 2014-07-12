@@ -41,17 +41,16 @@ ul {
   padding-left: 0;
 }
 
-a.help {
-  background-image: url('../images/info.png');
-  background-repeat: no-repeat;
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  margin-left: 4px;
-  position: relative;
-  top: 1px;
+.info-popup {
+  width: 600px;
+  margin-left: -300px;
+  height: 400px;
+  margin-top: -200px;
 }
 
-a.help:hover {
-  cursor: pointer;
+.info-popup .info-container {
+  margin: 10px;
+  overflow: scroll;
+  width: 580px;
+  height: 354px;
 }

@@ -21,6 +21,13 @@
 
     <div class="container">
 
+      <div class="popup info-popup">
+        <a class="close" onclick="closeHelp()">&nbsp;</a>
+        <div class="info-container">
+          <?php require_once "util/data-info.php"; ?>
+        </div>
+      </div>
+
       <div class="starter-template">
         <?php if($result == NULL): ?>
           School not found. Please <a href="schools.php">go back</a> and try again.
@@ -95,7 +102,7 @@
               echo "<table>";
               $sat25 = $result["sat_cr_25"] + $result["sat_mt_25"] + $result["sat_wr_25"];
               $sat75 = $result["sat_cr_75"] + $result["sat_mt_75"] + $result["sat_wr_75"];
-              echo "<tr><td>SAT Range:</td><td>" . r($sat25, $sat75) . '<a class="help"></a></td></tr>';
+              echo "<tr><td>SAT Range:</td><td>" . r($sat25, $sat75) . '<a class="help" onclick="help(\'sat-range\')"></a></td></tr>';
               echo "<tr><td>SAT Critical Reading:</td><td>" . r($result["sat_cr_25"], $result["sat_cr_75"]) . "</td></tr>";
               echo "<tr><td>SAT Math:</td><td>" . r($result["sat_mt_25"], $result["sat_mt_75"]) . "</td></tr>";
               echo "<tr><td>SAT Writing:</td><td>" . r($result["sat_wr_25"], $result["sat_wr_75"]) . "</td></tr>";
@@ -185,6 +192,7 @@
       </div>
 
     </div>
+    <script src="js/school.js"></script>
 <?php
   require_once "util/footer.php";
 ?>
