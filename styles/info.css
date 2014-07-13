@@ -51,3 +51,46 @@
   text-align: center !important;
   color: #5cb85c;
 }
+
+table .calc td {
+  text-align: center;
+}
+
+table .calc td a:hover {
+  cursor: pointer;
+}
+
+.gpa-popup {
+  width: 496px;
+  margin-left: -248px;
+}
+
+.gpa-popup-container {
+  margin: 20px;
+}
+
+.gpa-popup-container th {
+  font-size: 18px;
+  font-weight: 200;
+  padding-right: 10px;
+}
+
+.gpa-popup-container td {
+  padding-right: 10px;
+  padding-top: 10px;
+}
+
+.gpa-class-container {
+  max-height: 200px;
+  overflow: scroll;
+  display: block;
+}
+
+.gpa-popup button {
+  margin-top: 10px;
+  margin-bottom: -5px;
+}
+
+.gpa-buttons {
+  text-align: center;
+}

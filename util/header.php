@@ -14,10 +14,6 @@
   require_once "util/util.php";
   require_once "util/get-db.php";
   $id = authenticate();
-  if($id < 0) { // redirect user if they're not logged in
-    header("Location: sign-in.php");
-    die();
-  }
   $loggedIn = $id >= 0;
 
   switch($mode) {
@@ -103,7 +99,7 @@
           </ul>
           <form class="navbar-right navbar-form" role="form" action="sign-in.php" method="post">
             <?php if($loggedIn): ?>
-              <button type="submit" class="btn btn-success">Sign Out</button>
+              <a href="sign-out.php"><button type="button" class="btn btn-success">Sign Out</button></a>
             <?php else: ?>
               <?php if($page >= 0): ?>
                 <div class="form-group">

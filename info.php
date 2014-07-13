@@ -67,7 +67,30 @@
   }
 ?>
 
+    <div class="bg" onclick="hideGPA()"></div>
+
     <div class="container">
+
+      <div class="popup gpa-popup">
+        <div class="gpa-popup-container">
+          <table>
+            <tr>
+              <th width="180px">Class Name (Optional)</th>
+              <th width="96px">Weight</th>
+              <th width="92px">Semesters</th>
+              <th width="65px">Grade</th>
+            </tr>
+          </table>
+          <table class="gpa-class-container">
+
+          </table>
+          <div class="gpa-buttons">
+            <button type="button" class="btn btn-success" onclick="addGPARow()">Add class</button>
+            <button type="button" class="btn btn-success" onclick="calcGPA()">Calculate</button>
+            <button type="button" class="btn btn-success" onclick="hideGPA()">Cancel</button>
+          </div>
+        </div>
+      </div>
 
       <div class="starter-template">
         <h1>Update your information</h1>
@@ -101,10 +124,12 @@
               a("actSC", "Best ACT Science");
               a("actWR", "Best ACT Writing");
               doubleBlank();
-              a("gpaWeight", "Unweighted GPA");
-              a("gpaNoWeight", "Weighted GPA");
-              /*doubleBlank();*/
+              a("gpaNoWeight", "Unweighted GPA");
+              a("gpaWeight", "Weighted GPA");
             ?>
+            <tr class="calc">
+              <td colspan="2"><a onclick="showGPA()">Calculate</a></td>
+            </tr>
             <tr>
               <td colspan="2"><input type="submit" class="btn btn-primary" value="Save Changes" /></td>
             </tr>
@@ -114,5 +139,6 @@
 
     </div>
 <?php
+  $extraF = '<script src="js/info.js"></script>';
   require_once "util/footer.php";
 ?>
