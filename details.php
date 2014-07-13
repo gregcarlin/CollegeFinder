@@ -15,32 +15,24 @@
           <li>
             We do the leg work.
             <p>We collect and organize data on thousands of schools across the country.</p>
-            <div class="cover">
-              <img src="images/search.png" /><!-- TODO make image fade away -->
-            </div>
+            <img src="images/search.png" alt="Example list of schools." id="search" />
           </li>
 
           <li>
             You control what you see.
             <p>You specify exactly what kinds of schools you want to see. Select by major, test scores, location, and more.</p>
+            <img src="images/degree.png" alt="Example specifying degree." id="degree" />
           </li>
 
           <li>
             We help you determine where to apply.
-            <p>We guide you through the whole process, from creating initial lists to visiting.</p>
+            <p>We guide you through the whole process, from creating initial lists to visiting. <a href="sign-up.php">Sign up</a> now to start your application!</p>
+            <!-- TODO: add a picture here -->
           </li>
         </ol>
       </div>
 
     </div><!-- /.container -->
-
-
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>-->
-    <script src="js/jquery.min.js"></script>
-    <script src="bootstrap/js/bootstrap.min.js"></script>
-    <script src="js/details.js"></script>
-  </body>
-</html>
+<?php
+  require_once "util/footer.php";
+?>

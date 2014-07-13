@@ -1,6 +1,6 @@
 ol.lead {
   counter-reset: details;
-  list-style-position: inside;
+  padding: 0;
 }
 
 ol.lead > li {
@@ -19,16 +19,17 @@ ol.lead > li:before {
 }
 
 ol.lead p {
-  font-size: 20px;
+  font-size: 18px;
 }
 
 ol.lead img {
   width: 100%;
 }
 
-ol.lead .cover {
-  width: 100%;
-  height: 100%;
-  background-color: #000;
-  z-index: 20;
+ol.lead img#search {
+  max-width: 829px;
+}
+
+ol.lead img#degree {
+  max-width: 423px;
 }

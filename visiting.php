@@ -2,7 +2,7 @@
   $page = 4;
   $mode = 1;
   $title = 'Plan a Visit';
-  require_once "util/header-signedin.php";
+  require_once "util/header.php";
 ?>
 
     <div class="container">
