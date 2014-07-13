@@ -7,6 +7,7 @@
     
     <?php if($jquery) echo '<script src="js/jquery.min.js"></script>'; ?>
     <?php if($bootstrap) echo '<script src="bootstrap/js/bootstrap.min.js"></script>'; ?>
+    <?php if(isset($extraF)) echo $extraF; ?>
 
     <div class="footer">
       <ul>

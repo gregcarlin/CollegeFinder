@@ -1,11 +1,11 @@
 body {
-  padding-top: 50px;
   padding-bottom: 20px;
 }
 
 .starter-template {
   padding: 40px 15px;
   text-align: center;
+  margin-top: 50px;
 }
 
 .popup {
@@ -24,6 +24,16 @@ body {
   width: 16px;
   height: 16px;
   margin: 5px;
+}
+
+.bg {
+  display: none;
+  background: #000;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  opacity: .5;
 }
 
 .sign-up-pop {
@@ -121,14 +131,19 @@ a.help {
   width: 12px;
   height: 12px;
   margin-left: 4px;
+  opacity: .2;
   position: relative;
   top: 1px;
-  opacity: .2;
 }
 
 a.help:hover {
   cursor: pointer;
   opacity: .5;
+}
+
+table tr a.help {
+  float: right;
+  top: 4px;
 }
 
 .footer {
@@ -156,4 +171,13 @@ a.help:hover {
 
 .footer ul li:first-child {
   margin-left: 0;
+}
+
+ul.bullet {
+  list-style-type: disc;
+  list-style-position: outside;
+}
+
+ul > li > ul {
+  margin-left: 20px;
 }

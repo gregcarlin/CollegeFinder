@@ -97,7 +97,7 @@ function r($min, $max) {
 
 // like h(), but adds a $ before the value if known
 function m($var, $name=NULL) {
-  if($var) return "$" . $var;
+  if($var) return "$" . number_format($var);
   return $name == NULL ? "Unknown" : ($name . " Unknown");
 }
 
