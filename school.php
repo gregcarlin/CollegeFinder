@@ -207,7 +207,13 @@
     </div>
 <?php
   $extraF = '<script type="text/javascript">';
-  $extraF .= 'var acceptData = [{value: ' . ($result['applied'] - $result['admitted']) . ', color: "#F7464A", highlight: "#FF5A5E", label: "Denied"}, {value: ' . $result['admitted'] . ', color: "#46BFBD", highlight: "#5AD3D1", label: "Accepted"}];';
+
+  $accepted = $result['admitted'];
+  $acceptTotal = $result['applied'];
+  $denied = $acceptTotal - $accepted;
+  //$extraF .= 'var acceptData = [{value: ' . $denied . ', color: "#F7464A", highlight: "#FF5A5E", label: "Denied: ' . $denied . ' (' . round(100 * $denied / $acceptTotal) . '%)"}, {value: ' . $accepted . ', color: "#46BFBD", highlight: "#5AD3D1", label: "Accepted: ' . $accepted . ' ()"}];';
+  $extraF .= 'var acceptData = [{value: ' . $denied . ', color: "#F7464A", highlight: "#FF5A5E", label: "Denied"}, {value: ' . $accepted . ', color: "#46BFBD", highlight: "#5AD3D1", label: "Accepted"}];';
+  
   $extraF .= 'var genderData = [{value: ' . $result['enroll_full_f'] . ', color: "#F7464A", highlight: "#FF5A5E", label: "Female"}, {value: ' . $result['enroll_full_m'] . ', color: "#46BFBD", highlight: "#5AD3D1", label: "Male"}];';
   $extraF .= '</script>';
   $extraF .= '<script src="js/school.js"></script><script src="js/Chart.min.js"></script><script src="js/charts.js"></script>';
