@@ -70,6 +70,7 @@
               echo "<tr><td>Part-Time Enrolled:</td><td>" . h($result["enroll_pt"]) . "</td></tr>";
               $enroll = round($result["enroll"] / $result["admitted"] * 100);
               echo "<tr><td>Enroll Rate:</td><td>" . ($enroll ? ($enroll . "%") : "Unknown") . "</td></tr>";
+              echo "<tr><td>Male:</td><td>" . ((!$result["enroll_ft"] || !$result["enroll_full_m"] || !$result["enroll_full_f"]) ? "Unknown" : (round(($result["enroll_full_m"] / $result["enroll_ft"]) * 100) . "%")) . "</td></tr>";
               echo "</table>";
 
               echo "<table>";
