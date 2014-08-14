@@ -35,6 +35,16 @@
           School not found. Please <a href="schools.php">go back</a> and try again.
         <?php else: ?>
           <h1><?php echo $result["name"]; ?></h1>
+          <div class="top">
+            <div>
+              Acceptance
+              <canvas id="accept-chart" width="150" height="150"></canvas>
+            </div>
+            <div>
+              Gender
+              <canvas id="gender-chart" width="150" height="150"></canvas>
+            </div>
+          </div>
           <div class="left">
             <h2>Location</h2>
             <?php
@@ -196,6 +206,10 @@
 
     </div>
 <?php
-  $extraF = '<script src="js/school.js"></script>';
+  $extraF = '<script type="text/javascript">';
+  $extraF .= 'var acceptData = [{value: ' . ($result['applied'] - $result['admitted']) . ', color: "#F7464A", highlight: "#FF5A5E", label: "Denied"}, {value: ' . $result['admitted'] . ', color: "#46BFBD", highlight: "#5AD3D1", label: "Accepted"}];';
+  $extraF .= 'var genderData = [{value: ' . $result['enroll_full_f'] . ', color: "#F7464A", highlight: "#FF5A5E", label: "Female"}, {value: ' . $result['enroll_full_m'] . ', color: "#46BFBD", highlight: "#5AD3D1", label: "Male"}];';
+  $extraF .= '</script>';
+  $extraF .= '<script src="js/school.js"></script><script src="js/Chart.min.js"></script><script src="js/charts.js"></script>';
   require_once "util/footer.php";
 ?>
