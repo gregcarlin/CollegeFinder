@@ -17,6 +17,14 @@
   $title = $result['name'];
   $extra = '<link href="styles/school.css" rel="stylesheet" />';
   require_once "util/header.php";
+
+  if($loggedIn) {
+    $stmt = $mysql->prepare("SELECT `sat`,`sat_mt`,`sat_cr`,`sat_wr`,`act`,`act_en`,`act_mt`,`act_rd`,`act_sc`,`act_wr` FROM `students` WHERE `id` = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $student = getStudents(getResult($stmt))[0];
+    $stmt->close();
+  }
 ?>
     <div class="bg" onclick="closeHelp()"></div>
 
@@ -115,7 +123,8 @@
               echo "<table>";
               $sat25 = $result["sat_cr_25"] + $result["sat_mt_25"] + $result["sat_wr_25"];
               $sat75 = $result["sat_cr_75"] + $result["sat_mt_75"] + $result["sat_wr_75"];
-              echo "<tr><td>SAT Range:</td><td>" . r($sat25, $sat75) . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
+              $satColor = ($sat25 && $sat75 && $student->sat()) ? ($student->sat() < $sat25 ? '#900' : ($student->sat() > $sat75 ? '#090' : '#990')) : '#000';
+              echo '<tr><td>SAT Range:</td><td><span style="color: ' . $satColor . '">' . r($sat25, $sat75) . '</span><a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
               echo "<tr><td>SAT Critical Reading:</td><td>" . r($result["sat_cr_25"], $result["sat_cr_75"]) . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
               echo "<tr><td>SAT Math:</td><td>" . r($result["sat_mt_25"], $result["sat_mt_75"]) . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
               echo "<tr><td>SAT Writing:</td><td>" . r($result["sat_wr_25"], $result["sat_wr_75"]) . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';

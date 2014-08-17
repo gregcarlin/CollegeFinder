@@ -9,7 +9,8 @@
 
       <div class="starter-template">
 
-        TODO: attribute icomoon.io
+        TODO: attribute icomoon.io<br />
+        attribute data sources (IPEDS and collegeboard)
 
       </div>
 

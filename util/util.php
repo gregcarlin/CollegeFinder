@@ -1,5 +1,140 @@
 <?php
 
+class StoredObject {
+  private $result; // sql result
+
+  function __construct($result) {
+    $this->result = $result;
+  }
+
+  /*function hasBasic($name) {
+    return isset($result[$name]);
+  }*/
+
+  function getBasic($name) {
+    //return $this->hasBasic($name) ? $result[$name] : NULL;
+    return isset($this->result[$name]) ? $this->result[$name] : NULL;
+  }
+}
+
+class School {
+
+}
+
+class Student {
+  /*public $firstName;
+  public $lastName;
+  public $sat;
+  public $satMath;
+  public $satRead;
+  public $satWrit;
+  public $act;
+  public $actEngl;
+  public $actMath;
+  public $actRead;
+  public $actScie;
+  public $actWrit;
+  public $gpaWeighted;
+  public $gpaUnweighted;*/
+  //private $result;
+  private $store;
+
+  function __construct($result) {
+    /*$this->$firstName = $result["fname"];
+    $this->$lastName = $result["lname"];
+    $this->$sat = $result["sat"];
+    $this->$satMath = $result["sat_mt"];
+    $this->$satRead = $result["sat_cr"];
+    $this->$satWrit = $result["sat_wr"];
+    $this->$act = $result["act"];
+    $this->$actEngl = $result["act_en"];
+    $this->$actMath = $result["act_mt"];
+    $this->$actRead = $result["act_rd"];
+    $this->$actScie = $result["act_sc"];
+    $this->$actWrit = $result["act_wr"];
+    $this->$gpaWeighted = $result["gpa_weight"];
+    $this->$gpaUnweighted = $result["gpa_noweight"];*/
+    //$this->result = $result;
+    $this->store = new StoredObject($result);
+  }
+
+  /*function hasFirstName() {
+    return $this->store->hasBasic("fname");
+  }*/
+
+  function firstName() {
+    /*if($this->)
+    return $this->result["fname"];*/
+    return $this->store->getBasic("fname");
+  }
+
+  /*function hasLastName() {
+    return $this->store->hasBasic("lname");
+  }*/
+
+  function lastName() {
+    //return $this->result["lname"];
+    return $this->store->getBasic("lname");
+  }
+
+  /*function hasFullName() {
+    return $this->hasFirstName() && $this->hasLastName();
+  }*/
+
+  function fullName() {
+    return $this->firstName() . ' ' . $this->lastName();
+  }
+
+  function sat() {
+    //return $this->result["sat"];
+    return $this->store->getBasic("sat");
+  }
+
+  function satMath() {
+    return $this->store->getBasic("sat_mt");
+  }
+
+  function satReading() {
+    return $this->store->getBasic("sat_cr");
+  }
+
+  function satWriting() {
+    return $this->store->getBasic("sat_wr");
+  }
+
+  function act() {
+    return $this->store->getBasic("act");
+  }
+
+  function actEnglish() {
+    return $this->store->getBasic("act_en");
+  }
+
+  function actMath() {
+    return $this->store->getBasic("act_mt");
+  }
+
+  function actReading() {
+    return $this->store->getBasic("act_rd");
+  }
+
+  function actScience() {
+    return $this->store->getBasic("act_sc");
+  }
+
+  function actWriting() {
+    return $this->store->getBasic("act_wr");
+  }
+
+  function weightedGPA() {
+    return $this->store->getBasic("gpa_weight");
+  }
+
+  function unweightedGPA() {
+    return $this->store->getBasic("gpa_noweight");
+  }
+}
+
 // returns true if any of the parameters passed to it are set in the POST environment
 function anySet() {
   foreach(func_get_args() as $item) {
@@ -174,22 +309,28 @@ function locate($address) {
 // returns an array of the results of a mysql query as arrays. query should be executed already.
 function getResult($stmt) {
   $meta = $stmt->result_metadata(); 
-  while ($field = $meta->fetch_field()) 
-  { 
+  while ($field = $meta->fetch_field()) { 
       $params[] = &$row[$field->name]; 
   } 
 
   call_user_func_array(array($stmt, 'bind_result'), $params); 
 
   while ($stmt->fetch()) { 
-      foreach($row as $key => $val) 
-      { 
+      foreach($row as $key => $val) { 
           $c[$key] = $val; 
       } 
       $result[] = $c; 
   }
 
   return isset($result) ? $result : NULL;
+}
+
+// converts results returned by getResult to student objects
+function getStudents($results) {
+  foreach($results as $result) {
+    $students[] = new Student($result);
+  }
+  return isset($students) ? $students : NULL;
 }
 
 function formatSchool($school, $listPage=false) {
