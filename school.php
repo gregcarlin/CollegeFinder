@@ -9,12 +9,12 @@
   $stmt = $mysql->prepare("SELECT * FROM `schools`,`supplementary` WHERE `schools`.`id` = `supplementary`.`id` AND `schools`.`id` = ?");
   $stmt->bind_param("i", $_GET['id']);
   $stmt->execute();
-  $result = getResult($stmt)[0];
+  $result = getSchools(getResult($stmt))[0];
   $stmt->close();
 
   $page = 2;
   $mode = 0;
-  $title = $result['name'];
+  $title = $result->name();
   $extra = '<link href="styles/school.css" rel="stylesheet" />';
   require_once "util/header.php";
 
@@ -42,7 +42,7 @@
         <?php if($result == NULL): ?>
           School not found. Please <a href="schools.php">go back</a> and try again.
         <?php else: ?>
-          <h1><?php echo $result["name"]; ?></h1>
+          <h1><?php echo $result->name(); ?></h1>
           <div class="top">
             <div>
               Acceptance
@@ -57,19 +57,18 @@
             <h2>Location</h2>
             <?php
               echo "<ul>";
-              echo "<li>" . h($result["address"], "Street") . "</li>";
-              echo "<li>" . $result["city"] . ", " . $result["state"] . " " . $result["zip"] . "</li>";
+              echo "<li>" . $result->address() . "</li>";
+              echo "<li>" . $result->city() . ", " . $result->state() . " " . $result->zip() . "</li>";
               echo "</ul>";
 
               echo "<ul>";
-              echo "<li>" . $result["county"] . "</li>";
-              $urbArr = array(11 => "Large City", 12 => "Midsize City", 13 => "Small City", 21 => "Large Suburb", 22 => "Midsize Suburb", 23 => "Small Suburb", 31 => "Fringe Town", 32 => "Distant Town", 33 => "Remote Town", 41 => "Fringe Rural", 42 => "Distant Rural", 43 => "Remote Rural", -3 => "Setting Unknown");
-              echo "<li>" . $urbArr[$result["urbanization"]] . '<a class="help" onclick="help(\'setting\')"></a></li>';
-              echo "<li>Congressional District: " . $result["congress_district"] . "</li>";
+              echo "<li>" . $result->county() . "</li>";
+              echo "<li>" . $result->urbanization() . '<a class="help" onclick="help(\'setting\')"></a></li>';
+              echo "<li>Congressional District: " . $result->congressionalDistrict() . "</li>";
               echo "</ul>";
 
-              $lon = $result["longitude"];
-              $lat = $result["latitude"];
+              $lon = $result->longitude();
+              $lat = $result->latitude();
               $lon = $lon < 0 ? (-$lon . "&#176; W") : ($lon . "&#176; E");
               $lat = $lat < 0 ? (-$lat . "&#176; S") : ($lat . "&#176; N");
               $coord = $lat . " " . $lon;
@@ -80,69 +79,58 @@
             <h2>Statistics</h2>
             <?php
               echo "<table>";
-              echo "<tr><td>Applicants:</td><td>" . h($result["applied"]) . '</td></tr>';
-              echo "<tr><td>Admitted:</td><td>" . h($result["admitted"]) . "</td></tr>";
-              $accept = round($result["admitted"] / $result["applied"] * 100);
-              echo "<tr><td>Acceptance Rate:</td><td>" . ($accept ? ($accept . "%") : "Unknown") . "</td></tr>";
-              echo "<tr><td>Full-Time Enrolled:</td><td>" . h($result["enroll_ft"]) . "</td></tr>";
-              echo "<tr><td>Part-Time Enrolled:</td><td>" . h($result["enroll_pt"]) . "</td></tr>";
-              $enroll = round($result["enroll"] / $result["admitted"] * 100);
-              echo "<tr><td>Enroll Rate:</td><td>" . ($enroll ? ($enroll . "%") : "Unknown") . "</td></tr>";
-              echo "<tr><td>Male:</td><td>" . ((!$result["enroll_ft"] || !$result["enroll_full_m"] || !$result["enroll_full_f"]) ? "Unknown" : (round(($result["enroll_full_m"] / $result["enroll_ft"]) * 100) . "%")) . "</td></tr>";
+              echo "<tr><td>Applicants:</td><td>" . $result->applicants() . '</td></tr>';
+              echo "<tr><td>Admitted:</td><td>" . $result->admitted() . "</td></tr>";
+              echo "<tr><td>Acceptance Rate:</td><td>" . $result->acceptanceRate() . "</td></tr>";
+              echo "<tr><td>Full-Time Enrolled:</td><td>" . $result->fullTimeEnrolled() . "</td></tr>";
+              echo "<tr><td>Part-Time Enrolled:</td><td>" . $result->partTimeEnrolled() . "</td></tr>";
+              echo "<tr><td>Enroll Rate:</td><td>" . $result->enrollRate() . "</td></tr>";
+              echo "<tr><td>Male:</td><td>" . $result->proportionMale() . "</td></tr>";
               echo "</table>";
 
               echo "<table>";
-              echo "<tr><td>Male Applicants:</td><td>" . h($result["applied_m"]) . "</td></tr>";
-              echo "<tr><td>Admitted Males:</td><td>" . h($result["admit_m"]) . "</td></tr>";
-              $acceptM = round($result["admit_m"] / $result["applied_m"] * 100);
-              echo "<tr><td>Male Acceptance Rate:</td><td>" . ($acceptM ? ($acceptM . "%") : "Unknown") . "</td></tr>";
-              echo "<tr><td>Full-Time Enrolled Males:</td><td>" . h($result["enroll_full_m"]) . "</td></tr>";
-              echo "<tr><td>Part-Time Enrolled Males:</td><td>" . h($result["enroll_part_m"]) . "</td></tr>";
-              $enrollM = round($result["enroll_m"] / $result["admit_m"] * 100);
-              echo "<tr><td>Male Enroll Rate:</td><td>" . ($enrollM ? ($enrollM . "%") : "Unknown") . "</td></tr>";
+              echo "<tr><td>Male Applicants:</td><td>" . $result->maleApplicants() . "</td></tr>";
+              echo "<tr><td>Admitted Males:</td><td>" . $result->admittedMales() . "</td></tr>";
+              echo "<tr><td>Male Acceptance Rate:</td><td>" . $result->maleAcceptanceRate() . "</td></tr>";
+              echo "<tr><td>Full-Time Enrolled Males:</td><td>" . $result->fullTimeEnrolledMales() . "</td></tr>";
+              echo "<tr><td>Part-Time Enrolled Males:</td><td>" . $result->partTimeEnrolledMales() . "</td></tr>";
+              echo "<tr><td>Male Enroll Rate:</td><td>" . $result->maleEnrollRate() . "</td></tr>";
               echo "</table>";
 
               echo "<table>";
-              echo "<tr><td>Female Applicants:</td><td>" . h($result["applied_f"]) . "</td></tr>";
-              echo "<tr><td>Admitted Females:</td><td>" . h($result["admit_f"]) . "</td></tr>";
-              $acceptF = round($result["admit_f"] / $result["applied_f"] * 100);
-              echo "<tr><td>Female Acceptance Rate:</td><td>" . ($acceptF ? ($acceptF . "%") : "Unknown") . "</td></tr>";
-              echo "<tr><td>Full-Time Enrolled Females:</td><td>" . h($result["enroll_full_f"]) . "</td></tr>";
-              echo "<tr><td>Part-Time Enrolled Females:</td><td>" . h($result["enroll_part_f"]) . "</td></tr>";
-              $enrollF = round($result["enroll_f"] / $result["admit_f"] * 100);
-              echo "<tr><td>Female Enroll Rate:</td><td>" . ($enrollF ? ($enrollF . "%") : "Unknown") . "</td></tr>";
+              echo "<tr><td>Female Applicants:</td><td>" . $result->femaleApplicants() . "</td></tr>";
+              echo "<tr><td>Admitted Females:</td><td>" . $result->admittedFemales() . "</td></tr>";
+              echo "<tr><td>Female Acceptance Rate:</td><td>" . $result->femaleAcceptanceRate() . "</td></tr>";
+              echo "<tr><td>Full-Time Enrolled Females:</td><td>" . $result->fullTimeEnrolledFemales() . "</td></tr>";
+              echo "<tr><td>Part-Time Enrolled Females:</td><td>" . $result->partTimeEnrolledFemales() . "</td></tr>";
+              echo "<tr><td>Female Enroll Rate:</td><td>" . $result->femaleEnrollRate() . "</td></tr>";
               echo "</table>";
 
               echo "<table>";
-              $satNum = $result["sat_num"];
-              echo "<tr><td>Applicants Submitting SAT Scores:</td><td>" . ($satNum == NULL ? "Unknown" : ($satNum . " (" . round($result["sat_prop"]*100) . "%)")) . "</td></tr>";
-              $actNum = $result["act_num"];
-              echo "<tr><td>Applicants Submitting ACT Scores:</td><td>" . ($actNum == NULL ? "Unknown" : ($actNum . " (" . round($result["act_prop"]*100) . "%)")) . "</td></tr>";
+              echo "<tr><td>Applicants Submitting SAT Scores:</td><td>" . $result->numberSubmittingSAT() . " (" . $result->proportionSubmittingSAT() . ")</td></tr>";
+              echo "<tr><td>Applicants Submitting ACT Scores:</td><td>" . $result->numberSubmittingACT() . " (" . $result->proportionSubmittingACT() . ")</td></tr>";
               echo "</table>";
 
               echo "<table>";
-              $sat25 = $result["sat_cr_25"] + $result["sat_mt_25"] + $result["sat_wr_25"];
-              $sat75 = $result["sat_cr_75"] + $result["sat_mt_75"] + $result["sat_wr_75"];
-              $satColor = ($sat25 && $sat75 && $student->sat()) ? ($student->sat() < $sat25 ? '#900' : ($student->sat() > $sat75 ? '#090' : '#990')) : '#000';
-              echo '<tr><td>SAT Range:</td><td><span style="color: ' . $satColor . '">' . r($sat25, $sat75) . '</span><a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
-              echo "<tr><td>SAT Critical Reading:</td><td>" . r($result["sat_cr_25"], $result["sat_cr_75"]) . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
-              echo "<tr><td>SAT Math:</td><td>" . r($result["sat_mt_25"], $result["sat_mt_75"]) . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
-              echo "<tr><td>SAT Writing:</td><td>" . r($result["sat_wr_25"], $result["sat_wr_75"]) . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
-              echo "<tr><td>ACT Range:</td><td>" . r($result["act_cm_25"], $result["act_cm_75"]) . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
-              echo "<tr><td>ACT English:</td><td>" . r($result["act_en_25"], $result["act_en_75"]) . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
-              echo "<tr><td>ACT Math:</td><td>" . r($result["act_mt_25"], $result["act_mt_75"]) . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
-              echo "<tr><td>ACT Writing:</td><td>" . r($result["act_wr_25"], $result["act_wr_75"]) . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
+              $satColor = ($result->sat25() && $result->sat75() && $student->sat()) ? ($student->sat() < $result->sat25() ? '#900' : ($student->sat() > $result->sat75() ? '#090' : '#990')) : '#000';
+              echo '<tr><td>SAT Range:</td><td><span style="color: ' . $satColor . '">' . $result->satRange() . '</span><a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
+              echo "<tr><td>SAT Critical Reading:</td><td>" . $result->satReadingRange() . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
+              echo "<tr><td>SAT Math:</td><td>" . $result->satMathRange() . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
+              echo "<tr><td>SAT Writing:</td><td>" . $result->satWritingRange() . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
+              echo "<tr><td>ACT Range:</td><td>" . $result->actRange() . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
+              echo "<tr><td>ACT English:</td><td>" . $result->actEnglishRange() . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
+              echo "<tr><td>ACT Math:</td><td>" . $result->actMathRange() . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
+              echo "<tr><td>ACT Writing:</td><td>" . $result->actWritingRange() . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
               echo "</table>";
 
               echo "<table>";
-              $disabled = round($result["disabled"] * 100);
-              echo "<tr><td>Disabled:</td><td>" . ($disabled ? ($disabled . "%") : "Unknown") . '<a class="help" onclick="help(\'disabled\')"></a></td></tr>';
-              echo "<tr><td>Application Fee (undergrads):</td><td>" . m($result["app_fee_u"]) . "</td></tr>";
-              echo "<tr><td>Application Fee (grads):</td><td>" . m($result["app_fee_g"]) . "</td></tr>";
-              echo "<tr><td>Dormitory Capacity:</td><td>" . h($result["room_cap"]) . "</td></tr>";
-              echo "<tr><td>Cost of Room:</td><td>" . m($result["room_cost"]) . "</td></tr>";
-              echo "<tr><td>Cost of Board:</td><td>" . m($result["board_cost"]) . "</td></tr>";
-              echo "<tr><td>Cost of Both:</td><td>" . m($result["total_cost"]) . "</td></tr>";
+              echo "<tr><td>Disabled:</td><td>" . $result->proportionDisabled() . '<a class="help" onclick="help(\'disabled\')"></a></td></tr>';
+              echo "<tr><td>Application Fee (undergrads):</td><td>" . $result->undergraduateApplicationFee() . "</td></tr>";
+              echo "<tr><td>Application Fee (grads):</td><td>" . $result->graduateApplicationFee() . "</td></tr>";
+              echo "<tr><td>Dormitory Capacity:</td><td>" . $result->dormCapacity() . "</td></tr>";
+              echo "<tr><td>Cost of Room:</td><td>" . $result->roomCost() . "</td></tr>";
+              echo "<tr><td>Cost of Board:</td><td>" . $result->boardCost() . "</td></tr>";
+              echo "<tr><td>Cost of Both:</td><td>" . $result->totalCost() . "</td></tr>";
               echo "</table>";
             ?>
           </div>
@@ -150,24 +138,18 @@
             <h2>Facts</h2>
             <?php
               echo "<ul>";
-              $levelArr = array(1 => "4+ Years", 2 => "At least 2 but less than 4 years", 3 => "Less than 2 years", -3 => "Unknown Level");
-              echo "<li>" . $levelArr[$result["level"]] . '<a class="help" onclick="help(\'level\')"></a></li>';
-              $controlArr = array(1 => "Public", 2 => "Private (Non-Profit)", 3 => "Private (For-Profit)", -3 => "Unknown Control");
-              echo "<li>" . $controlArr[$result["control"]] . "</li>";
-              $maxDegArr = array(11 => "Doctor's - Research/Scholarship and Professional Practice", 12 => "Doctor's - Research/Scholarship", 13 => "Doctor's - Professional Practice", 14 => "Doctor's", 20 => "Master's", 30 => "Bachelor's", 40 => "Associate's", 0 => "None", -3 => "Unknown");
-              echo "<li>Highest Degree Offered: " . $maxDegArr[$result["max_degree"]] . "</li>";
+              echo "<li>" . $result->level() . '<a class="help" onclick="help(\'level\')"></a></li>';
+              echo "<li>" . $result->control() . "</li>";
+              echo "<li>Highest Degree Offered: " . $result->maxDegree() . "</li>";
               echo "</ul>";
 
               echo "<ul>";
-              echo "<li>" . ($result["historically_black"] ? "" : "Not ") . "Historically Black</li>";
-              $hosArr = array(1 => "Has a Hospital", 2 => "Does not have a Hospital", -1 => "Hospital Presence Unknown");
-              $hosArr[-2] = $hosArr[-1];
-              echo "<li>" . $hosArr[$result["has_hospital"]] . "</li>";
-              echo "<li>" . ($result["tribal"] ? "A" : "Not a") . ' Tribal College or University<a class="help" onclick="help(\'tribal\')"></a></li>';
-              echo "<li>" . ($result["open_to_public"] ? "" : "Not ") . "Open to the General Public</li>";
-              $closed = $result["closed"];
-              echo "<li>" . ($closed == NULL ? ("Currently Open") : ("Closed on " . $closed)) . "</li>";
-              echo "<li>" . ($result["land_grant"] ? "A" : "Not a") . ' Land Grant University<a class="help" onclick="help(\'land-grant\')"></a></li>';
+              echo "<li>" . ($result->historicallyBlack() ? "" : "Not ") . "Historically Black</li>";
+              echo "<li>" . $result->hasHospital() . "</li>";
+              echo "<li>" . ($result->tribal() ? "A" : "Not a") . ' Tribal College or University<a class="help" onclick="help(\'tribal\')"></a></li>';
+              echo "<li>" . ($result->openToPublic() ? "" : "Not ") . "Open to the General Public</li>";
+              echo "<li>" . $result->closed() . "</li>";
+              echo "<li>" . ($result->landGrant() ? "A" : "Not a") . ' Land Grant University<a class="help" onclick="help(\'land-grant\')"></a></li>';
               echo "<li>";
               if($result["all_dist"] == 1) {
                 echo "All Programs Offered via Distance";

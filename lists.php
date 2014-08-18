@@ -8,13 +8,13 @@
   $stmt = $mysql->prepare("SELECT * FROM `schools`,`lists`,`supplementary` WHERE `lists`.`student_id` = ? AND `lists`.`school_id` = `schools`.`id` AND `schools`.`id` = `supplementary`.`id`");
   $stmt->bind_param("i", $id);
   $stmt->execute();
-  $result = getResult($stmt);
+  $result = getSchools(getResult($stmt));
   $stmt->close();
 
   $lists = array_fill(0, 3, array());
   $listNames = array(0 => "Reach", 1 => "Target", 2 => "Safety");
   foreach($result as $school) {
-    array_push($lists[$school['list_id']], $school);
+    array_push($lists[$school->getOther('list_id')], $school);
   }
 ?>
     <div class="container">
