@@ -150,45 +150,28 @@
               echo "<li>" . ($result->openToPublic() ? "" : "Not ") . "Open to the General Public</li>";
               echo "<li>" . $result->closed() . "</li>";
               echo "<li>" . ($result->landGrant() ? "A" : "Not a") . ' Land Grant University<a class="help" onclick="help(\'land-grant\')"></a></li>';
-              echo "<li>";
-              if($result["all_dist"] == 1) {
-                echo "All Programs Offered via Distance";
-              } else if($result["under_dist"] == 1) {
-                echo "Undergraduate Programs Offered via Distance";
-              } else if($result["grad_dist"] == 1) {
-                echo "Graduate Programs Offered via Distance";
-              } else if($result["no_dist"] == 1) {
-                echo "No Programs Offered via Distance";
-              } else {
-                echo "Programs Offered via Distance Unknown";
-              }
-              echo '<a class="help" onclick="help(\'distance\')"></a></li>';
+              echo "<li>" . $result->distanceStatement() . '<a class="help" onclick="help(\'distance\')"></a></li>';
               echo "</ul>";
 
               echo "<ul>";
-              $boardArr = array(1 => ("Offers a Meal Plan (" . h($result["meals_wk"]) . " meals per week)"), 3 => "Does not Offer a Meal Plan", -1 => "Meal Plan Presence Unknown");
-              $boardArr[2] = $boardArr[1];
-              $boardArr[-2] = $boardArr[-1];
-              echo "<li>" . $boardArr[$result["board_provided"]] . "</li>";
-              $campArr = array(1 => "Required to Live on Campus", 2 => "Not Required to Live on Campus", -1 => "Campus Requirement Unknown");
-              $campArr[-2] = $campArr[-1];
-              echo "<li>" . $campArr[$result["campus_required"]] . "</li>";
+              echo "<li>" . $result->boardStatement() . "</li>";
+              echo "<li>" . $result->requiredToLiveOnCampus() . "</li>";
               echo "</ul>";
             ?>
 
             <h2>Contact</h2>
             <?php
               echo "<p>";
-              echo h(p($result["phone"]), "Phone") . "<br />";
-              echo h(p($result["fax"]), "Fax") . "<br />";
+              echo "P: " . $result->phone() . "<br />";
+              echo "F: " . $result->fax() . "<br />";
               echo "</p>";
 
               echo "<p>";
-              echo u($result["website"], "Main Website") . "<br />";
-              echo u($result["admis_url"], "Admissions") . "<br />";
-              echo u($result["finance_url"], "Financial Aid") . "<br />";
-              echo u($result["net_price_url"], "Net Price Calculator") . "<br />";
-              echo u($result["app_url"], "Online Application") . "<br />";
+              echo $result->website() . "<br />";
+              echo $result->admissionsURL() . "<br />";
+              echo $result->financialAidURL() . "<br />";
+              echo $result->netPriceURL() . "<br />";
+              echo $result->applicationURL() . "<br />";
               echo "</p>";
             ?>
           </div>
@@ -198,14 +181,9 @@
     </div>
 <?php
   $extraF = '<script type="text/javascript">';
-
-  $accepted = $result['admitted'];
-  $acceptTotal = $result['applied'];
-  $denied = $acceptTotal - $accepted;
-  //$extraF .= 'var acceptData = [{value: ' . $denied . ', color: "#F7464A", highlight: "#FF5A5E", label: "Denied: ' . $denied . ' (' . round(100 * $denied / $acceptTotal) . '%)"}, {value: ' . $accepted . ', color: "#46BFBD", highlight: "#5AD3D1", label: "Accepted: ' . $accepted . ' ()"}];';
-  $extraF .= 'var acceptData = [{value: ' . $denied . ', color: "#F7464A", highlight: "#FF5A5E", label: "Denied"}, {value: ' . $accepted . ', color: "#46BFBD", highlight: "#5AD3D1", label: "Accepted"}];';
+  $extraF .= 'var acceptData = [{value: ' . $result->denied() . ', color: "#F7464A", highlight: "#FF5A5E", label: "Denied"}, {value: ' . $result->admitted() . ', color: "#46BFBD", highlight: "#5AD3D1", label: "Accepted"}];';
   
-  $extraF .= 'var genderData = [{value: ' . $result['enroll_full_f'] . ', color: "#F7464A", highlight: "#FF5A5E", label: "Female"}, {value: ' . $result['enroll_full_m'] . ', color: "#46BFBD", highlight: "#5AD3D1", label: "Male"}];';
+  $extraF .= 'var genderData = [{value: ' . $result->enrolledFemales() . ', color: "#F7464A", highlight: "#FF5A5E", label: "Female"}, {value: ' . $result->enrolledMales() . ', color: "#46BFBD", highlight: "#5AD3D1", label: "Male"}];';
   $extraF .= '</script>';
   $extraF .= '<script src="js/school.js"></script><script src="js/Chart.min.js"></script><script src="js/charts.js"></script>';
   require_once "util/footer.php";

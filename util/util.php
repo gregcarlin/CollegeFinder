@@ -17,12 +17,31 @@ class StoredObject {
     return $this->has($name) ? $this->result[$name] : StoredObject::$UNKNOWN;
   }
 
-  protected function getn($name) {
-    return $this->has($name) ? $this->result[$name] : ($name . ' ' . StoredObject::$UNKNOWN);
+  protected function getTagged($name, $tag) {
+    return $this->has($name) ? $this->result[$name] : ($tag . ' ' . StoredObject::$UNKNOWN);
   }
 
   protected function getMoney($name) {
     return $this->has($name) ? ('$' . $this->result[$name]) : StoredObject::$UNKNOWN;
+  }
+
+  protected function getPhone($name) {
+    if(!$this->has($name)) return StoredObject::$UNKNOWN;
+    $num = $this->get($name);
+    $len = strlen($num);
+    $rt = substr($num, $len - 4);
+    $rt = substr($num, $len - 7, 3) . "-" . $rt;
+    if($len > 7) {
+      $rt = "(" . substr($num, $len - 10, 3) . ") " . $rt;
+      if($len > 10) {
+        $rt = substr($num, $len - 10, 1) . " " . $rt;
+      }
+    }
+    return $rt;
+  }
+
+  protected function getURL($name, $tag) {
+    return $this->has($name) ? ('<a href="http://' . $this->get($name) . '" />' . $tag . '</a>') : ($tag . ' ' . StoredObject::$UNKNOWN);
   }
 
   function getOther($name) {
@@ -48,7 +67,9 @@ class StoredObject {
   }
 
   protected function getMoneyWithBackup() {
-    $rt = StoredObject::getWithBackup(func_get_args());
+    $args = func_get_args();
+    $rt = call_user_func_array("StoredObject::getWithBackup", $args);
+    //$rt = StoredObject::getWithBackup(func_get_args());
     return StoredObject::isKnown($rt) ? ('$' . $rt) : StoredObject::$UNKNOWN;
   }
 
@@ -83,7 +104,7 @@ class School extends StoredObject {
   }
 
   function address() {
-    return $this->getn("address");
+    return $this->getTagged("address", "Address");
   }
 
   function city() {
@@ -99,7 +120,7 @@ class School extends StoredObject {
   }
 
   function website() {
-    return $this->get("website");
+    return $this->getURL("website", "Main Website");
   }
 
   function county() {
@@ -115,23 +136,23 @@ class School extends StoredObject {
   }
 
   function phone() {
-    return $this->get("phone");
+    return $this->getPhone("phone");
   }
 
   function admissionsURL() {
-    return $this->get("admis_url");
+    return $this->getURL("admis_url", "Admissions");
   }
 
   function financialAidURL() {
-    return $this->get("finance_url");
+    return $this->getURL("finance_url", "Financial Aid");
   }
 
   function applicationURL() {
-    return $this->get("app_url");
+    return $this->getURL("app_url", "Online Application");
   }
 
   function netPriceURL() {
-    return $this->get("net_price_url");
+    return $this->getURL("net_price_url", "Net Price Calculator");
   }
 
   private static $sectors = array(0 => "Administrative", 1 => "Public and 4+ Years", 2 => "Private, Non-Profit and 4+ Years", 3 => "Private, For-Profit, and 4+ Years", 4 => "Public and 2 Years", 5 => "Private, Non-Profit, and 2 Years", 6 => "Private, For-Profit, and 2 Years", 7 => "Public and Less Than 2 Years", 8 => "Private, Non-Profit, and Less Than 2 Years", 9 => "Private, For-Profit, and Less Than 2 Years", 99 => "Unknown");
@@ -216,6 +237,10 @@ class School extends StoredObject {
   }
 
   // TODO
+
+  function fax() {
+    return $this->getPhone("fax");
+  }
 
   function congressionalDistrict() {
     return $this->get("congress_district");
@@ -443,6 +468,10 @@ class School extends StoredObject {
     return $this->getWithBackup("admitted", $this->admittedMales(), $this->admittedFemales());
   }
 
+  function denied() {
+    return StoredObject::isKnown($this->applicants(), $this->admitted()) ? ($this->applicants() - $this->admitted()) : -1;
+  }
+
   function rawAcceptanceRate() {
     return StoredObject::getFrac($this->admitted(), $this->applicants());
   }
@@ -517,12 +546,42 @@ class School extends StoredObject {
     return School::$board[$this->get("board_provided")];
   }
 
-  private static $liveOnCampus = array(1 => "Yes", 2 => "No", -1 => "Not Reported", -2 => "Not Applicable");
+  function boardStatement() {
+    switch($this->get("board_provided")) {
+      case 1:
+        return "Offers a Meal Plan (" . $this->mealsPerWeek() . " meals per week)";
+      case 2:
+        return "Offers a Meal Plan (Meals per week varies)";
+      case 3:
+        return "Does not Offer a Meal Plan";
+      default:
+      case -1:
+        return "Meal Plan Presence Not Reported";
+      case -2:
+        return "Meal Plan Presence Not Applicable";
+    }
+  }
+
+  private static $liveOnCampus = array(1 => "Required to Live on Campus", 2 => "Not Required to Live on Campus", -1 => "Campus Requirement Not Reported", -2 => "Campus Requirement Not Applicable");
   function requiredToLiveOnCampus() {
     return School::$liveOnCampus[$this->get("campus_required")];
   }
 
   // TODO distance stuff
+
+  function distanceStatement() {
+    if($this->get("all_dist") == 1) {
+      return "All Programs Offered via Distance";
+    } else if($this->get("under_dist") == 1) {
+      return "Undergraduate Programs Offered via Distance";
+    } else if($this->get("grad_dist") == 1) {
+      return "Graduate Programs Offered via Distance";
+    } else if($this->get("no_dist") == 1) {
+      return "No Programs Offered via Distance";
+    } else {
+      return "Programs Offered via Distance Unknown";
+    }
+  }
 }
 
 class Student extends StoredObject {
@@ -653,26 +712,6 @@ function bInt($name) {
   } else {
     return 0;
   }
-}
-
-// formats a phone number for humans to read
-function p($num) {
-  if(!$num) return $num;
-  $len = strlen($num);
-  $rt = substr($num, $len - 4);
-  $rt = substr($num, $len - 7, 3) . "-" . $rt;
-  if($len > 7) {
-    $rt = "(" . substr($num, $len - 10, 3) . ") " . $rt;
-    if($len > 10) {
-      $rt = substr($num, $len - 10, 1) . " " . $rt;
-    }
-  }
-  return $rt;
-}
-
-// returns a link to the given url with the given name if it is not null, otherwise returns Unknown
-function u($url, $name) {
-  return $url ? ('<a href="http://' . $url . '">' . $name . '</a>') : ($name . " Unknown");
 }
 
 // interprets a checkbox sent via POST
