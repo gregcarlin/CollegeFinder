@@ -1,98 +1,6 @@
 <?php
 
-class StoredObject {
-  protected static $UNKNOWN = "Unknown";
-
-  private $result; // sql result
-
-  function __construct($result) {
-    $this->result = $result;
-  }
-
-  protected function has($name) {
-    return isset($this->result[$name]) && !is_null($this->result[$name]);
-  }
-
-  protected function get($name) {
-    return $this->has($name) ? $this->result[$name] : StoredObject::$UNKNOWN;
-  }
-
-  protected function getTagged($name, $tag) {
-    return $this->has($name) ? $this->result[$name] : ($tag . ' ' . StoredObject::$UNKNOWN);
-  }
-
-  protected function getMoney($name) {
-    return $this->has($name) ? ('$' . $this->result[$name]) : StoredObject::$UNKNOWN;
-  }
-
-  protected function getPhone($name) {
-    if(!$this->has($name)) return StoredObject::$UNKNOWN;
-    $num = $this->get($name);
-    $len = strlen($num);
-    $rt = substr($num, $len - 4);
-    $rt = substr($num, $len - 7, 3) . "-" . $rt;
-    if($len > 7) {
-      $rt = "(" . substr($num, $len - 10, 3) . ") " . $rt;
-      if($len > 10) {
-        $rt = substr($num, $len - 10, 1) . " " . $rt;
-      }
-    }
-    return $rt;
-  }
-
-  protected function getURL($name, $tag) {
-    return $this->has($name) ? ('<a href="http://' . $this->get($name) . '" />' . $tag . '</a>') : ($tag . ' ' . StoredObject::$UNKNOWN);
-  }
-
-  function getOther($name) {
-    return $this->get($name);
-  }
-
-  protected function getWithBackup() { // pass name, then components
-    $args = func_num_args();
-    assert($args % 2 == 1); // odd number of arguments (backups come in pairs)
-    $name = func_get_arg(0);
-    if($this->has($name)) {
-      return $this->get($name);
-    } else {
-      for($i = 1; $i < $args; $i++) {
-        $first = func_get_arg($i);
-        $second = func_get_arg($i + 1);
-        if(StoredObject::isKnown($first, $second)) {
-          return $first + $second;
-        }
-      }
-      return StoredObject::$UNKNOWN;
-    }
-  }
-
-  protected function getMoneyWithBackup() {
-    $args = func_get_args();
-    $rt = call_user_func_array("StoredObject::getWithBackup", $args);
-    //$rt = StoredObject::getWithBackup(func_get_args());
-    return StoredObject::isKnown($rt) ? ('$' . $rt) : StoredObject::$UNKNOWN;
-  }
-
-  // returns true if all args are known
-  protected static function isKnown() {
-    foreach(func_get_args() as $item) {
-      if(is_null($item) || $item == StoredObject::$UNKNOWN) return false;
-    }
-    return true;
-  }
-
-  protected static function getFrac($top, $bot) {
-    return StoredObject::isKnown($top, $bot) ? ($top / $bot) : -1.0;
-  }
-
-  protected static function formatFrac($frac) {
-    return $frac >= 0.0 ? (round($frac * 100) . '%') : StoredObject::$UNKNOWN;
-  }
-
-  protected static function formatRange($min, $max) {
-    return StoredObject::isKnown($min, $max) ? ($min . ' - ' . $max) : StoredObject::$UNKNOWN;
-  }
-}
+require_once "Class_StoredObject.php";
 
 class School extends StoredObject {
   function id() {
@@ -312,6 +220,14 @@ class School extends StoredObject {
     return $this->get("sat_cr_75");
   }
 
+  function hasSatReading() {
+    return StoredObject::isKnown($this->satReading25(), $this->satReading75());
+  }
+
+  function satReading50() {
+    return StoredObject::getAvg($this->satReading25(), $this->satReading75());
+  }
+
   function satReadingRange() {
     return StoredObject::formatRange($this->satReading25(), $this->satReading75());
   }
@@ -322,6 +238,14 @@ class School extends StoredObject {
 
   function satMath75() {
     return $this->get("sat_mt_75");
+  }
+
+  function hasSatMath() {
+    return StoredObject::isKnown($this->satMath25(), $this->satMath75());
+  }
+
+  function satMath50() {
+    return StoredObject::getAvg($this->satMath25(), $this->satMath75());
   }
 
   function satMathRange() {
@@ -336,6 +260,14 @@ class School extends StoredObject {
     return $this->get("sat_wr_75");
   }
 
+  function hasSatWriting() {
+    return StoredObject::isKnown($this->satWriting25(), $this->satWriting75());
+  }
+
+  function satWriting50() {
+    return StoredObject::getAvg($this->satWriting25(), $this->satWriting75());
+  }
+
   function satWritingRange() {
     return StoredObject::formatRange($this->satWriting25(), $this->satWriting75());
   }
@@ -344,8 +276,20 @@ class School extends StoredObject {
     return StoredObject::isKnown($this->satReading25(), $this->satMath25(), $this->satWriting25()) ? ($this->satReading25() + $this->satMath25() + $this->satWriting25()) : StoredObject::$UNKNOWN;
   }
 
+  function hasSat25() {
+    return StoredObject::isKnown($this->sat25());
+  }
+
   function sat75() {
     return StoredObject::isKnown($this->satReading75(), $this->satMath75(), $this->satWriting75()) ? ($this->satReading75() + $this->satMath75() + $this->satWriting75()) : StoredObject::$UNKNOWN;
+  }
+
+  function hasSat75() {
+    return StoredObject::isKnown($this->sat75());
+  }
+
+  function sat50() {
+    return StoredObject::getAvg($this->sat25(), $this->sat75());
   }
 
   function satRange() {
@@ -360,6 +304,10 @@ class School extends StoredObject {
     return $this->get("act_en_75");
   }
 
+  function hasActEnglish() {
+    return StoredObject::isKnown($this->actEnglish25(), $this->actEnglish75());
+  }
+
   function actEnglishRange() {
     return StoredObject::formatRange($this->actEnglish25(), $this->actEnglish75());
   }
@@ -372,6 +320,10 @@ class School extends StoredObject {
     return $this->get("act_mt_75");
   }
 
+  function hasActMath() {
+    return StoredObject::isKnown($this->actMath25(), $this->actMath75());
+  }
+
   function actMathRange() {
     return StoredObject::formatRange($this->actMath25(), $this->actMath75());
   }
@@ -382,6 +334,10 @@ class School extends StoredObject {
 
   function actWriting75() {
     return $this->get("act_wr_75");
+  }
+
+  function hasActWriting() {
+    return StoredObject::isKnown($this->actWriting25(), $this->actWriting75());
   }
 
   function actWritingRange() {
@@ -406,6 +362,14 @@ class School extends StoredObject {
     } else {
       return StoredObject::$UNKNOWN;
     }
+  }
+
+  function hasAct25() {
+    return StoredObject::isKnown($this->act25());
+  }
+
+  function hasAct75() {
+    return StoredObject::isKnown($this->act75());
   }
 
   function actRange() {
@@ -582,275 +546,6 @@ class School extends StoredObject {
       return "Programs Offered via Distance Unknown";
     }
   }
-}
-
-class Student extends StoredObject {
-  function id() {
-    return $this->get("id");
-  }
-
-  function firstName() {
-    return $this->get("fname");
-  }
-
-  function lastName() {
-    return $this->get("lname");
-  }
-
-  function fullName() {
-    return StoredObject::isKnown($this->firstName(), $this->lastName()) ? ($this->firstName() . ' ' . $this->lastName()) : StoredObject::$UNKNOWN;
-  }
-
-  function sat() {
-    return $this->get("sat");
-  }
-
-  function satMath() {
-    return $this->get("sat_mt");
-  }
-
-  function satReading() {
-    return $this->get("sat_cr");
-  }
-
-  function satWriting() {
-    return $this->get("sat_wr");
-  }
-
-  function act() {
-    return $this->get("act");
-  }
-
-  function actEnglish() {
-    return $this->get("act_en");
-  }
-
-  function actMath() {
-    return $this->get("act_mt");
-  }
-
-  function actReading() {
-    return $this->get("act_rd");
-  }
-
-  function actScience() {
-    return $this->get("act_sc");
-  }
-
-  function actWriting() {
-    return $this->get("act_wr");
-  }
-
-  function weightedGPA() {
-    return $this->get("gpa_weight");
-  }
-
-  function unweightedGPA() {
-    return $this->get("gpa_noweight");
-  }
-}
-
-// returns true if any of the parameters passed to it are set in the POST environment
-function anySet() {
-  foreach(func_get_args() as $item) {
-    if(isset($_POST[$item]) && strlen($_POST[$item]) > 0) {
-      return true;
-    }
-  }
-  return false;
-}
-
-// returns true if all of the parameters passed to it are set in the POST environment
-function allSet() {
-  foreach(func_get_args() as $item) {
-    if(!isset($_POST[$item]) || strlen($_POST[$item]) <= 0) {
-      return false;
-    }
-  }
-  return true;
-}
-
-// echos the value of the given variable in POST if and only if it is set
-function e($var) {
-  if(isset($_POST[$var])) {
-    echo ' value="' . $_POST[$var] . '"';
-  }
-}
-
-// returns the value of the given variable in POST if it is set and has a length > 0, otherwise returns NULL
-function n($name) {
-  if(isset($_POST[$name]) && strlen($_POST[$name]) > 0) {
-    return $_POST[$name];
-  } else {
-    return NULL;
-  }
-}
-
-// returns the value of the given variable in POST if it is set, otherwise returns an empty string
-function b($name) {
-  if(isset($_POST[$name])) {
-    return $_POST[$name];
-  } else {
-    return "";
-  }
-}
-
-// returns the value of the given variable in POST if it is set, otherwise returns an empty array
-function bArr($name) {
-  if(isset($_POST[$name])) {
-    return $_POST[$name];
-  } else {
-    return array();
-  }
-}
-
-// returns the integer value of the given variable in POST if it is set to a valid integer, otherwise returns 0
-function bInt($name) {
-  if(isset($_POST[$name])) {
-    $i = intval($_POST[$name]);
-    return is_nan($i) ? 0 : $i;
-  } else {
-    return 0;
-  }
-}
-
-// interprets a checkbox sent via POST
-function isChecked($name) {
-  return isset($_POST[$name]);
-}
-
-// authenticates user. must include get-db.php before using
-function authenticate() {
-  if(!isset($_COOKIE['hash'])) return -1;
-  global $mysql;
-  $stmt = $mysql->prepare("SELECT `id` FROM `sessions` WHERE `hash` = ?");
-  $stmt->bind_param("s", $_COOKIE['hash']);
-  $stmt->execute();
-  $id = NULL;
-  $stmt->bind_result($id);
-  if(!$stmt->fetch()) return -1;
-  return $id;
-}
-
-// signs the current user in. must include get-db.php before using. returns true on success, false on failure
-function signIn($email, $pass) {
-  global $mysql;
-  $stmt = $mysql->prepare("SELECT `id` FROM `students` WHERE `email` = ? AND `pass` = AES_ENCRYPT(?, 'supersecretkey')");
-  $stmt->bind_param("ss", $email, $pass);
-  $stmt->execute();
-  $id = NULL;
-  $stmt->bind_result($id);
-  if(!$stmt->fetch()) {
-    $stmt->close();
-    return false;
-  } else {
-
-    $stmt->close();
-
-    $stmt = $mysql->prepare("INSERT INTO `sessions` VALUES(?, ?, NULL)");
-    $hash = bin2hex(openssl_random_pseudo_bytes(23));
-    $expiration = isChecked("remember") ? time() + (60 * 60 * 24 * 30) : 0;
-    $stmt->bind_param("is", $id, $hash);
-    $stmt->execute();
-    $stmt->close();
-
-    setcookie('hash', $hash, $expiration, "/");
-
-    return true;
-  }
-}
-
-function handleError($errno, $errstr, $errfile, $errline, array $errcontext) {
-  if(error_reporting() === 0) return false;
-
-  throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
-}
-
-// returns the lat-long of an address or zip code
-function locate($address) {
-  set_error_handler('handleError');
-  try {
-    $url = "http://maps.googleapis.com/maps/api/geocode/xml?sensor=true&address=" . urlencode($address);
-    $xml = simplexml_load_file($url);
-    if($xml->status == "OK") {
-      $loc = $xml->result->geometry->location;
-      restore_error_handler();
-      return array("lat" => $loc->lat, "long" => $loc->lng);
-    }
-  } catch (ErrorException $e) {
-
-  }
-  restore_error_handler();
-  return array("lat" => 0.0, "long" => 0.0);
-}
-
-// returns an array of the results of a mysql query as arrays. query should be executed already.
-function getResult($stmt) {
-  $meta = $stmt->result_metadata(); 
-  while ($field = $meta->fetch_field()) { 
-      $params[] = &$row[$field->name]; 
-  } 
-
-  call_user_func_array(array($stmt, 'bind_result'), $params); 
-
-  while ($stmt->fetch()) { 
-      foreach($row as $key => $val) { 
-          $c[$key] = $val; 
-      } 
-      $result[] = $c; 
-  }
-
-  return isset($result) ? $result : NULL;
-}
-
-// converts results returned by getResult to school objects
-function getSchools($results) {
-  foreach($results as $result) {
-    $schools[] = new School($result);
-  }
-  return isset($schools) ? $schools : NULL;
-}
-
-// converts results returned by getResult to student objects
-function getStudents($results) {
-  foreach($results as $result) {
-    $students[] = new Student($result);
-  }
-  return isset($students) ? $students : NULL;
-}
-
-function formatSchool($school, $listPage=false) {
-  global $mysql, $id;
-  $format = '<tr id="row-' . $school->id() . '">';
-
-  $format .= '<td><a href="school.php?id=' . $school->id() . '">' . $school->name() . '</a></td>';
-  $format .= '<td>' . $school->city() . '</td>';
-  $format .= '<td>' . $school->state() . '</td>';
-  $format .= '<td>' . $school->satRange() . '</td>';
-  $format .= '<td>' . $school->actRange() . '</td>';
-  $format .= '<td>' . $school->acceptanceRate() . '</td>';
-
-  $stmt = $mysql->prepare("SELECT `list_id` FROM `lists` WHERE `student_id` = ? AND `school_id` = ?");
-  $stmt->bind_param("ii", $id, $school->id());
-  $stmt->execute();
-  $listID = NULL;
-  $stmt->bind_result($listID);
-  $inList = $stmt->fetch();
-  if($listPage) {
-    $format .= '<td class="save"><a onclick="removeFromList(' . $school->id() . ',' . $listID . ')">Remove</a></td>';
-  } else {
-    $lists = array(0 => "Reach", 1 => "Target", 2 => "Safety");
-    if($inList) {
-      $format .= '<td class="save"><span>' . $lists[$listID] . '</span><div class="list-popup"><a onclick="removeFromList(' . $school['id'] . ',' . $listID . ')">Remove</a></div></td>';
-    } else {
-      $format .= '<td class="save"><span>Save &raquo;</span><div class="list-popup"><a onclick="addToList(' . $school['id'] . ',0)">Reach</a><a onclick="addToList(' . $school['id'] . ',1)">Target</a><a onclick="addToList(' . $school['id'] . ',2)">Safety</a></div></td>';
-    }
-  }
-  $stmt->close();
-
-  $format .= '</tr>';
-
-  return $format;
 }
 
 ?>

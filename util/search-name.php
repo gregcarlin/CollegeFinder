@@ -7,7 +7,7 @@
   $name = strtolower($_POST['name']);
   $stmt = $mysql->prepare("SELECT * FROM `schools`,`supplementary` WHERE `schools`.`id` = `supplementary`.`id` AND (LOWER(`schools`.`name`) LIKE '%" . $name . "%' OR LOWER(`schools`.`alias` LIKE '%" . $name . "%')) LIMIT 0,101");
   $stmt->execute();
-  $schools = getResult($stmt);
+  $schools = getSchools(getResult($stmt));
   $stmt->close();
   $count = count($schools);
 ?>

@@ -52,6 +52,14 @@
               Gender
               <canvas id="gender-chart" width="150" height="150"></canvas>
             </div>
+            <div>
+              SAT
+              <canvas id="sat-chart" width="150" height="150"></canvas>
+            </div>
+            <div>
+              ACT
+              <canvas id="act-chart" width="150" height="150"></canvas>
+            </div>
           </div>
           <div class="left">
             <h2>Location</h2>
@@ -112,15 +120,21 @@
               echo "</table>";
 
               echo "<table>";
-              $satColor = ($result->sat25() && $result->sat75() && $student->sat()) ? ($student->sat() < $result->sat25() ? '#900' : ($student->sat() > $result->sat75() ? '#090' : '#990')) : '#000';
+              $satColor = $loggedIn ? getColor($result->hasSat25() && $result->hasSat75(), $result->sat25(), $result->sat75(), $student->hasSat(), $student->sat()) : '#000';
               echo '<tr><td>SAT Range:</td><td><span style="color: ' . $satColor . '">' . $result->satRange() . '</span><a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
-              echo "<tr><td>SAT Critical Reading:</td><td>" . $result->satReadingRange() . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
-              echo "<tr><td>SAT Math:</td><td>" . $result->satMathRange() . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
-              echo "<tr><td>SAT Writing:</td><td>" . $result->satWritingRange() . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
-              echo "<tr><td>ACT Range:</td><td>" . $result->actRange() . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
-              echo "<tr><td>ACT English:</td><td>" . $result->actEnglishRange() . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
-              echo "<tr><td>ACT Math:</td><td>" . $result->actMathRange() . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
-              echo "<tr><td>ACT Writing:</td><td>" . $result->actWritingRange() . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
+              $satCrColor = $loggedIn ? getColor($result->hasSatReading(), $result->satReading25(), $result->satReading75(), $student->hasSatReading(), $student->satReading()) : '#000';
+              echo '<tr><td>SAT Critical Reading:</td><td><span style="color: ' . $satCrColor . '">' . $result->satReadingRange() . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
+              $satMtColor = $loggedIn ? getColor($result->hasSatMath(), $result->satMath25(), $result->satMath75(), $student->hasSatMath(), $student->satMath()) : '#000';
+              echo '<tr><td>SAT Math:</td><td><span style="color: ' . $satMtColor . '">' . $result->satMathRange() . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
+              $satWrColor = $loggedIn ? getColor($result->hasSatWriting(), $result->satWriting25(), $result->satWriting75(), $student->hasSatWriting(), $student->satWriting()) : '#000';
+              echo '<tr><td>SAT Writing:</td><td><span style="color: ' . $satWrColor . '">' . $result->satWritingRange() . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
+              $actColor = $loggedIn ? getColor($result->hasAct25() && $result->hasAct75(), $result->act25(), $result->act75(), $student->hasAct(), $student->act()) : '#000';
+              echo '<tr><td>ACT Range:</td><td><span style="color: ' . $actColor . '">' . $result->actRange() . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
+              $actEnColor = $loggedIn ? getColor($result->hasActEnglish(), $result->actEnglish25(), $result->actEnglish75(), $student->hasActEnglish(), $student->actEnglish()) : '#000';
+              echo '<tr><td>ACT English:</td><td><span style="color: ' . $actEnColor . '">' . $result->actEnglishRange() . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
+              $actMtColor = $loggedIn ? getColor($result->hasActMath(), $result->actMath25(), $result->actMath75(), $student->hasActMath(), $student->actMath()) : '#000';
+              echo '<tr><td>ACT Math:</td><td><span style="color: ' . $actMtColor . '">' . $result->actMathRange() . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
+              echo '<tr><td>ACT Writing:</td><td><span style="color: #000' . '">' . $result->actWritingRange() . '<a class="help" onclick="help(\'score-ranges\')"></a></td></tr>';
               echo "</table>";
 
               echo "<table>";
@@ -182,8 +196,10 @@
 <?php
   $extraF = '<script type="text/javascript">';
   $extraF .= 'var acceptData = [{value: ' . $result->denied() . ', color: "#F7464A", highlight: "#FF5A5E", label: "Denied"}, {value: ' . $result->admitted() . ', color: "#46BFBD", highlight: "#5AD3D1", label: "Accepted"}];';
-  
   $extraF .= 'var genderData = [{value: ' . $result->enrolledFemales() . ', color: "#F7464A", highlight: "#FF5A5E", label: "Female"}, {value: ' . $result->enrolledMales() . ', color: "#46BFBD", highlight: "#5AD3D1", label: "Male"}];';
+  $extraF .= 'var satData = {labels: ["Math", "Reading", "Writing"], datasets: [';
+  if($loggedIn && $student->hasSATSubscores()) $extraF .= '{label: "You", fillColor: "rgba(220,220,220,0.2)", strokeColor: "rgba(220,220,220,1)", pointColor: "rgba(220,220,220,1)", pointStrokeColor: "#fff", pointHighlightFill: "#fff", pointHighlightStroke: "rgba(220,220,220,1)", data: [' . $student->satMath() . ', ' . $student->satReading() . ', ' . $student->satWriting() . ']}, ';
+  $extraF .= '{label: "' . $result->name() . '", fillColor: "rgba(151,187,205,0.2)", strokeColor: "rgba(151,187,205,1)", pointColor: "rgba(151,187,205,1)", pointStrokeColor: "#fff", pointHighlightFill: "#fff", pointHighlightStroke: "rgba(151,187,205,1)", data: [' . $result->satMath50() . ', ' . $result->satReading50() . ', ' . $result->satWriting50() . ']}]};';
   $extraF .= '</script>';
   $extraF .= '<script src="js/school.js"></script><script src="js/Chart.min.js"></script><script src="js/charts.js"></script>';
   require_once "util/footer.php";

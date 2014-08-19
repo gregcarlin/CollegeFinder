@@ -200,7 +200,7 @@
   //echo $query . "<br />";
   $stmt = $mysql->prepare($query);
   $stmt->execute();
-  $schools = getResult($stmt);
+  $schools = getSchools(getResult($stmt));
   $stmt->close();
   $count = count($schools);
 ?>
