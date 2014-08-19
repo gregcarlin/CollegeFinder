@@ -304,6 +304,10 @@ class School extends StoredObject {
     return $this->get("act_en_75");
   }
 
+  function actEnglish50() {
+    return StoredObject::getAvg($this->actEnglish25(), $this->actEnglish75());
+  }
+
   function hasActEnglish() {
     return StoredObject::isKnown($this->actEnglish25(), $this->actEnglish75());
   }
@@ -320,6 +324,10 @@ class School extends StoredObject {
     return $this->get("act_mt_75");
   }
 
+  function actMath50() {
+    return StoredObject::getAvg($this->actMath25(), $this->actMath75());
+  }
+
   function hasActMath() {
     return StoredObject::isKnown($this->actMath25(), $this->actMath75());
   }
@@ -334,6 +342,10 @@ class School extends StoredObject {
 
   function actWriting75() {
     return $this->get("act_wr_75");
+  }
+
+  function actWriting50() {
+    return StoredObject::getAvg($this->actWriting25(), $this->actWriting75());
   }
 
   function hasActWriting() {

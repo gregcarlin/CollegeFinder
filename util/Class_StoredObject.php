@@ -22,7 +22,7 @@ class StoredObject {
   }
 
   protected function getMoney($name) {
-    return $this->has($name) ? ('$' . $this->result[$name]) : StoredObject::$UNKNOWN;
+    return $this->has($name) ? ('$' . number_format($this->result[$name])) : StoredObject::$UNKNOWN;
   }
 
   protected function getPhone($name) {
@@ -69,7 +69,7 @@ class StoredObject {
   protected function getMoneyWithBackup() {
     $args = func_get_args();
     $rt = call_user_func_array("StoredObject::getWithBackup", $args);
-    return StoredObject::isKnown($rt) ? ('$' . $rt) : StoredObject::$UNKNOWN;
+    return StoredObject::isKnown($rt) ? ('$' . number_format($rt)) : StoredObject::$UNKNOWN;
   }
 
   // returns true if all args are known

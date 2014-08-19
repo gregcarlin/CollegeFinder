@@ -13,3 +13,6 @@ var genderChart = new Chart(genderCanvas).Pie(genderData);
 
 var satCanvas = $("#sat-chart").get(0).getContext("2d");
 var satChart = new Chart(satCanvas).Radar(satData);
+
+var actCanvas = $("#act-chart").get(0).getContext("2d");
+var actChart = new Chart(actCanvas).Radar(actData);

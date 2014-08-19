@@ -195,12 +195,21 @@
     </div>
 <?php
   $extraF = '<script type="text/javascript">';
+
   $extraF .= 'var acceptData = [{value: ' . $result->denied() . ', color: "#F7464A", highlight: "#FF5A5E", label: "Denied"}, {value: ' . $result->admitted() . ', color: "#46BFBD", highlight: "#5AD3D1", label: "Accepted"}];';
   $extraF .= 'var genderData = [{value: ' . $result->enrolledFemales() . ', color: "#F7464A", highlight: "#FF5A5E", label: "Female"}, {value: ' . $result->enrolledMales() . ', color: "#46BFBD", highlight: "#5AD3D1", label: "Male"}];';
+  
+  $selfColors = 'fillColor: "rgba(220,220,220,0.2)", strokeColor: "rgba(220,220,220,1)", pointColor: "rgba(220,220,220,1)", pointStrokeColor: "#fff", pointHighlightFill: "#fff", pointHighlightStroke: "rgba(220,220,220,1)"';
+  $schoolColors = 'fillColor: "rgba(151,187,205,0.2)", strokeColor: "rgba(151,187,205,1)", pointColor: "rgba(151,187,205,1)", pointStrokeColor: "#fff", pointHighlightFill: "#fff", pointHighlightStroke: "rgba(151,187,205,1)"';
   $extraF .= 'var satData = {labels: ["Math", "Reading", "Writing"], datasets: [';
-  if($loggedIn && $student->hasSATSubscores()) $extraF .= '{label: "You", fillColor: "rgba(220,220,220,0.2)", strokeColor: "rgba(220,220,220,1)", pointColor: "rgba(220,220,220,1)", pointStrokeColor: "#fff", pointHighlightFill: "#fff", pointHighlightStroke: "rgba(220,220,220,1)", data: [' . $student->satMath() . ', ' . $student->satReading() . ', ' . $student->satWriting() . ']}, ';
-  $extraF .= '{label: "' . $result->name() . '", fillColor: "rgba(151,187,205,0.2)", strokeColor: "rgba(151,187,205,1)", pointColor: "rgba(151,187,205,1)", pointStrokeColor: "#fff", pointHighlightFill: "#fff", pointHighlightStroke: "rgba(151,187,205,1)", data: [' . $result->satMath50() . ', ' . $result->satReading50() . ', ' . $result->satWriting50() . ']}]};';
+  if($loggedIn && $student->hasSATSubscores()) $extraF .= '{label: "You", ' . $selfColors . ', data: [' . $student->satMath() . ', ' . $student->satReading() . ', ' . $student->satWriting() . ']}, ';
+  $extraF .= '{label: "' . $result->name() . '", ' . $schoolColors . ', data: [' . $result->satMath50() . ', ' . $result->satReading50() . ', ' . $result->satWriting50() . ']}]};';
+  $extraF .= 'var actData = {labels: ["Math", "English", "Writing"], datasets: [';
+  if($loggedIn && $student->hasActMath() && $student->hasActEnglish() && $student->hasActWriting()) $extraF .= '{label: "You", ' . $selfColors . ', data: [' . $student->actMath() . ', ' . $student->actReading() . ', ' . $student->actWriting() . ']}, ';
+  $extraF .= '{label: "' . $result->name() . '", ' . $schoolColors . ', data: [' . $result->actMath50() . ', ' . $result->actEnglish50() . ', ' . $result->actWriting50() . ']}]};';
+
   $extraF .= '</script>';
+
   $extraF .= '<script src="js/school.js"></script><script src="js/Chart.min.js"></script><script src="js/charts.js"></script>';
   require_once "util/footer.php";
 ?>
