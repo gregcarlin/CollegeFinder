@@ -10,7 +10,9 @@
       <div class="starter-template">
 
         TODO: attribute icomoon.io<br />
-        attribute data sources (IPEDS and collegeboard)
+        attribute data sources (IPEDS and collegeboard)<br />
+        attribute jquery-ui
+        attribute jquery? bootstrap?
 
       </div>
 

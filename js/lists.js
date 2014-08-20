@@ -1,3 +1,25 @@
+$(".sortable").sortable({
+  update: function(event, ui) {
+    var list = ui.item.parent().parent().attr("id").substring(8);
+    var rows = $("#results-" + list + " .sortable tr");
+    var gaveError = false;
+    for(var i = 0; i < rows.length; i++) {
+      var row = rows.get(i);
+      var school = row.id.substring(4);
+      $.get('list-util.php?action=2&school=' + school + '&list=' + list + '&data=' + i, '', function(data, textStatus, jqXHR) {
+        if(jqXHR.responseText == 0) {
+          // do nothing
+        } else {
+          if(!gaveError) {
+            gaveError = true;
+            alert("Error ranking schools.");
+          }
+        }
+      });
+    }
+  }
+});
+
 function addToList(school, list) {
   alert("An unknown error has occurred. Please reload the page and try again.");
 }

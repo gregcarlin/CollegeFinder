@@ -47,7 +47,7 @@ switch($action) {
     if($present) {
       error(6); // item already in list
     }
-    $stmt = $mysql->prepare("INSERT INTO `lists` VALUES(?,?,?)");
+    $stmt = $mysql->prepare("INSERT INTO `lists` VALUES(?,?,?,0)");
     $stmt->bind_param("iii", $id, $school, $list);
     $stmt->execute();
     $stmt->close();
@@ -58,6 +58,16 @@ switch($action) {
     }
     $stmt = $mysql->prepare("DELETE FROM `lists` WHERE `student_id` = ? AND `school_id` = ? AND `list_id` = ?");
     $stmt->bind_param("iii", $id, $school, $list);
+    $stmt->execute();
+    $stmt->close();
+    break;
+  case 2: // set rank
+    if(!$present) error(7);
+    if(!isset($_GET['data'])) error(1);
+    $rank = intval($_GET['data']);
+    if(is_nan($rank)) error(2);
+    $stmt = $mysql->prepare("UPDATE `lists` SET `rank` = ? WHERE `student_id` = ? AND `school_id` = ? AND `list_id` = ?");
+    $stmt->bind_param("iiii", $rank, $id, $school, $list);
     $stmt->execute();
     $stmt->close();
     break;

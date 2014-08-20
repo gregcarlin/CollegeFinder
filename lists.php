@@ -5,7 +5,7 @@
   $extra = '<link href="styles/lists.css" rel="stylesheet" />';
   require_once "util/header.php";
 
-  $stmt = $mysql->prepare("SELECT * FROM `schools`,`lists`,`supplementary` WHERE `lists`.`student_id` = ? AND `lists`.`school_id` = `schools`.`id` AND `schools`.`id` = `supplementary`.`id`");
+  $stmt = $mysql->prepare("SELECT * FROM `schools`,`lists`,`supplementary` WHERE `lists`.`student_id` = ? AND `lists`.`school_id` = `schools`.`id` AND `schools`.`id` = `supplementary`.`id` ORDER BY `lists`.`rank`");
   $stmt->bind_param("i", $id);
   $stmt->execute();
   $result = getSchools(getResult($stmt));
@@ -29,6 +29,7 @@
             echo '<h1>' . $listNames[$i] . '</h1>';
             if(count($lists[$i]) > 0) {
               echo '<table class="results" id="results-' . $i . '">';
+              echo '<thead>';
               echo '<tr>';
               echo '<th>Name</th>';
               echo '<th>City</th>';
@@ -37,9 +38,12 @@
               echo '<th>ACT Range</th>';
               echo '<th>Acceptance</th>';
               echo '</tr>';
+              echo '</thead>';
+              echo '<tbody class="sortable">';
               foreach($lists[$i] as $school) {
                 echo formatSchool($school, true);
               }
+              echo '</tbody>';
               echo '</table>';
             } else {
               echo 'You do not have any schools in this list! Add some by <a href="search.php">searching</a> for them.';
@@ -51,7 +55,7 @@
       </div>
 
     </div>
-    <script src="js/lists.js"></script>
 <?php
+  $extraF = '<script src="js/jquery-ui.min.js"></script><script src="js/lists.js"></script>';
   require_once "util/footer.php";
 ?>
