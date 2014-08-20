@@ -4,6 +4,8 @@
     die();
   }
 
+  if(!isset($urlPrefix)) $urlPrefix = '';
+
   function c($n) {
     global $page;
     if($page == $n) {
@@ -11,8 +13,8 @@
     }
   }
 
-  require_once "util/util.php";
-  require_once "util/get-db.php";
+  require_once $urlPrefix . "util/util.php";
+  require_once $urlPrefix . "util/get-db.php";
   $id = authenticate();
   $loggedIn = $id >= 0;
 
@@ -22,13 +24,13 @@
       break;
     case 1: // force user to be logged in
       if(!$loggedIn) {
-        header("Location: sign-in.php");
+        header("Location: " . $urlPrefix . "sign-in.php");
         die();
       }
       break;
     case 2: // force user to be logged out
       if($loggedIn) {
-        header("Location: dashboard.php");
+        header("Location: " . $urlPrefix . "dashboard.php");
         die();
       }
       break;
@@ -41,15 +43,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="" />
-    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="shortcut icon" href="<?php echo $urlPrefix; ?>favicon.ico" />
 
     <title><?php if(isset($title)) echo $title . ' | '; ?>CollegeFinder</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="<?php echo $urlPrefix; ?>bootstrap/css/bootstrap.min.css" rel="stylesheet" />
 
     <!-- Custom styles for this template -->
-    <link href="styles/all.css" rel="stylesheet" />
+    <link href="<?php echo $urlPrefix; ?>styles/all.css" rel="stylesheet" />
 
     <?php if(isset($extra)) echo $extra; ?>
 
@@ -86,20 +88,20 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <?php if($loggedIn): ?>
-              <li<?php c(0); ?>><a href="dashboard.php">Home</a></li>
-              <li<?php c(1); ?>><a href="info.php">Info</a></li>
-              <li<?php c(2); ?>><a href="search.php">Search</a></li>
-              <li<?php c(3); ?>><a href="lists.php">Lists</a></li>
-              <li<?php c(4); ?>><a href="visiting.php">Plan a Visit</a></li>
+              <li<?php c(0); ?>><a href="<?php echo $urlPrefix; ?>dashboard.php">Home</a></li>
+              <li<?php c(1); ?>><a href="<?php echo $urlPrefix; ?>info.php">Info</a></li>
+              <li<?php c(2); ?>><a href="<?php echo $urlPrefix; ?>search.php">Search</a></li>
+              <li<?php c(3); ?>><a href="<?php echo $urlPrefix; ?>lists.php">Lists</a></li>
+              <li<?php c(4); ?>><a href="<?php echo $urlPrefix; ?>visiting.php">Plan a Visit</a></li>
             <?php else: ?>
-              <li<?php c(0); ?>><a href="index.php">Home</a></li>
-              <li<?php c(1); ?>><a href="details.php">About</a></li>
+              <li<?php c(0); ?>><a href="<?php echo $urlPrefix; ?>index.php">Home</a></li>
+              <li<?php c(1); ?>><a href="<?php echo $urlPrefix; ?>details.php">About</a></li>
               <li<?php c(2); ?>><a href="#contact">Contact</a></li>
             <?php endif; ?>
           </ul>
           <form class="navbar-right navbar-form" role="form" action="sign-in.php" method="post">
             <?php if($loggedIn): ?>
-              <a href="sign-out.php"><button type="button" class="btn btn-success">Sign Out</button></a>
+              <a href="<?php echo $urlPrefix; ?>sign-out.php"><button type="button" class="btn btn-success">Sign Out</button></a>
             <?php else: ?>
               <?php if($page >= 0): ?>
                 <div class="form-group">
@@ -121,7 +123,7 @@
     <?php if(!$loggedIn): ?>
       <div class="popup sign-up-pop">
         <h2>Sign Up</h2>
-        <form role="form" action="sign-up.php" method="post">
+        <form role="form" action="<?php echo $urlPrefix; ?>sign-up.php" method="post">
           <table>
             <tr>
               <td><label for="fname">First Name:</label></td>

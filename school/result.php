@@ -1,29 +1,30 @@
 <?php
-  if(!isset($_GET['id']) && !isset($_GET['name'])) {
+
+  if(!isset($_GET['name'])) {
     header("Location: schools.php");
     die();
   }
 
-  if(isset($_GET['name'])) {
-    echo "name = " . $_GET['name'];
-    die();
-  }
+  $name = $_GET['name'];
+  $name = str_replace('-', ' ', $name);
+  echo $name;
 
-  require_once "util/util.php";
-  require_once "util/get-db.php";
-  $stmt = $mysql->prepare("SELECT * FROM `schools`,`supplementary` WHERE `schools`.`id` = `supplementary`.`id` AND `schools`.`id` = ?");
-  $stmt->bind_param("i", $_GET['id']);
+  require_once "../util/util.php";
+  require_once "../util/get-db.php";
+  $stmt = $mysql->prepare("SELECT * FROM `schools`,`supplementary` WHERE `schools`.`id` = `supplementary`.`id` AND `schools`.`name` = ?");
+  $stmt->bind_param("s", $name);
   $stmt->execute();
   $result = getSchools(getResult($stmt))[0];
   $stmt->close();
 
   $page = 2;
   $mode = 0;
-  $title = $result->name();
-  $extra = '<link href="styles/school.css" rel="stylesheet" />';
-  require_once "util/header.php";
+  $title = $result ? $result->name() : 'School not found';
+  $extra = '<link href="../styles/school.css" rel="stylesheet" />';
+  $urlPrefix = "../";
+  require_once "../util/header.php";
 
-  if($loggedIn) {
+  if($result && $loggedIn) {
     $stmt = $mysql->prepare("SELECT `sat`,`sat_mt`,`sat_cr`,`sat_wr`,`act`,`act_en`,`act_mt`,`act_rd`,`act_sc`,`act_wr` FROM `students` WHERE `id` = ?");
     $stmt->bind_param("i", $id);
     $stmt->execute();
@@ -39,13 +40,13 @@
         <a class="close" onclick="closeHelp()">&nbsp;</a>
         <div class="info-container">
           <h2>Information</h2>
-          <?php require_once "util/data-info.php"; ?>
+          <?php require_once "../util/data-info.php"; ?>
         </div>
       </div>
 
       <div class="starter-template">
         <?php if($result == NULL): ?>
-          School not found. Please <a href="schools.php">go back</a> and try again.
+          School not found. Please <a href="../schools.php">go back</a> and try again.
         <?php else: ?>
           <h1><?php echo $result->name(); ?></h1>
           <div class="top">
@@ -199,22 +200,25 @@
 
     </div>
 <?php
-  $extraF = '<script type="text/javascript">';
+  $extraF = '';
+  if($result) {
+    $extraF .= '<script type="text/javascript">';
 
-  $extraF .= 'var acceptData = [{value: ' . $result->denied() . ', color: "#F7464A", highlight: "#FF5A5E", label: "Denied"}, {value: ' . $result->admitted() . ', color: "#46BFBD", highlight: "#5AD3D1", label: "Accepted"}];';
-  $extraF .= 'var genderData = [{value: ' . $result->enrolledFemales() . ', color: "#F7464A", highlight: "#FF5A5E", label: "Female"}, {value: ' . $result->enrolledMales() . ', color: "#46BFBD", highlight: "#5AD3D1", label: "Male"}];';
-  
-  $selfColors = 'fillColor: "rgba(220,220,220,0.2)", strokeColor: "rgba(220,220,220,1)", pointColor: "rgba(220,220,220,1)", pointStrokeColor: "#fff", pointHighlightFill: "#fff", pointHighlightStroke: "rgba(220,220,220,1)"';
-  $schoolColors = 'fillColor: "rgba(151,187,205,0.2)", strokeColor: "rgba(151,187,205,1)", pointColor: "rgba(151,187,205,1)", pointStrokeColor: "#fff", pointHighlightFill: "#fff", pointHighlightStroke: "rgba(151,187,205,1)"';
-  $extraF .= 'var satData = {labels: ["Math", "Reading", "Writing"], datasets: [';
-  if($loggedIn && $student->hasSATSubscores()) $extraF .= '{label: "You", ' . $selfColors . ', data: [' . $student->satMath() . ', ' . $student->satReading() . ', ' . $student->satWriting() . ']}, ';
-  $extraF .= '{label: "' . $result->name() . '", ' . $schoolColors . ', data: [' . $result->satMath50() . ', ' . $result->satReading50() . ', ' . $result->satWriting50() . ']}]};';
-  $extraF .= 'var actData = {labels: ["Math", "English", "Writing"], datasets: [';
-  if($loggedIn && $student->hasActMath() && $student->hasActEnglish() && $student->hasActWriting()) $extraF .= '{label: "You", ' . $selfColors . ', data: [' . $student->actMath() . ', ' . $student->actReading() . ', ' . $student->actWriting() . ']}, ';
-  $extraF .= '{label: "' . $result->name() . '", ' . $schoolColors . ', data: [' . $result->actMath50() . ', ' . $result->actEnglish50() . ', ' . $result->actWriting50() . ']}]};';
+    $extraF .= 'var acceptData = [{value: ' . $result->denied() . ', color: "#F7464A", highlight: "#FF5A5E", label: "Denied"}, {value: ' . $result->admitted() . ', color: "#46BFBD", highlight: "#5AD3D1", label: "Accepted"}];';
+    $extraF .= 'var genderData = [{value: ' . $result->enrolledFemales() . ', color: "#F7464A", highlight: "#FF5A5E", label: "Female"}, {value: ' . $result->enrolledMales() . ', color: "#46BFBD", highlight: "#5AD3D1", label: "Male"}];';
+    
+    $selfColors = 'fillColor: "rgba(220,220,220,0.2)", strokeColor: "rgba(220,220,220,1)", pointColor: "rgba(220,220,220,1)", pointStrokeColor: "#fff", pointHighlightFill: "#fff", pointHighlightStroke: "rgba(220,220,220,1)"';
+    $schoolColors = 'fillColor: "rgba(151,187,205,0.2)", strokeColor: "rgba(151,187,205,1)", pointColor: "rgba(151,187,205,1)", pointStrokeColor: "#fff", pointHighlightFill: "#fff", pointHighlightStroke: "rgba(151,187,205,1)"';
+    $extraF .= 'var satData = {labels: ["Math", "Reading", "Writing"], datasets: [';
+    if($loggedIn && $student->hasSATSubscores()) $extraF .= '{label: "You", ' . $selfColors . ', data: [' . $student->satMath() . ', ' . $student->satReading() . ', ' . $student->satWriting() . ']}, ';
+    $extraF .= '{label: "' . $result->name() . '", ' . $schoolColors . ', data: [' . $result->satMath50() . ', ' . $result->satReading50() . ', ' . $result->satWriting50() . ']}]};';
+    $extraF .= 'var actData = {labels: ["Math", "English", "Writing"], datasets: [';
+    if($loggedIn && $student->hasActMath() && $student->hasActEnglish() && $student->hasActWriting()) $extraF .= '{label: "You", ' . $selfColors . ', data: [' . $student->actMath() . ', ' . $student->actReading() . ', ' . $student->actWriting() . ']}, ';
+    $extraF .= '{label: "' . $result->name() . '", ' . $schoolColors . ', data: [' . $result->actMath50() . ', ' . $result->actEnglish50() . ', ' . $result->actWriting50() . ']}]};';
 
-  $extraF .= '</script>';
+    $extraF .= '</script>';
+  }
 
-  $extraF .= '<script src="js/school.js"></script><script src="js/Chart.min.js"></script><script src="js/charts.js"></script>';
-  require_once "util/footer.php";
+  $extraF .= '<script src="../js/school.js"></script><script src="../js/Chart.min.js"></script><script src="../js/charts.js"></script>';
+  require_once "../util/footer.php";
 ?>
