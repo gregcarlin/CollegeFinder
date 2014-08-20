@@ -276,6 +276,10 @@ class School extends StoredObject {
     return StoredObject::formatRange($this->satWriting25(), $this->satWriting75());
   }
 
+  function hasSatSubscores() {
+    return $this->hasSatReading() && $this->hasSatMath() && $this->hasSatWriting();
+  }
+
   function sat25() {
     return StoredObject::isKnown($this->satReading25(), $this->satMath25(), $this->satWriting25()) ? ($this->satReading25() + $this->satMath25() + $this->satWriting25()) : StoredObject::$UNKNOWN;
   }
@@ -358,6 +362,10 @@ class School extends StoredObject {
 
   function actWritingRange() {
     return StoredObject::formatRange($this->actWriting25(), $this->actWriting75());
+  }
+
+  function hasActSubscores() {
+    return $this->hasActEnglish() && $this->hasActMath() && $this->hasActWriting();
   }
 
   function act25() {

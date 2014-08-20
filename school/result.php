@@ -225,10 +225,12 @@
     $schoolColors = 'fillColor: "rgba(151,187,205,0.2)", strokeColor: "rgba(151,187,205,1)", pointColor: "rgba(151,187,205,1)", pointStrokeColor: "#fff", pointHighlightFill: "#fff", pointHighlightStroke: "rgba(151,187,205,1)"';
     $extraF .= 'var satData = {labels: ["Math", "Reading", "Writing"], datasets: [';
     if($loggedIn && $student->hasSATSubscores()) $extraF .= '{label: "You", ' . $selfColors . ', data: [' . $student->satMath() . ', ' . $student->satReading() . ', ' . $student->satWriting() . ']}, ';
-    $extraF .= '{label: "' . $result->name() . '", ' . $schoolColors . ', data: [' . $result->satMath50() . ', ' . $result->satReading50() . ', ' . $result->satWriting50() . ']}]};';
+    if($result->hasSatSubscores()) $extraF .= '{label: "' . $result->name() . '", ' . $schoolColors . ', data: [' . $result->satMath50() . ', ' . $result->satReading50() . ', ' . $result->satWriting50() . ']}';
+    $extraF .= ']};';
     $extraF .= 'var actData = {labels: ["Math", "English", "Writing"], datasets: [';
     if($loggedIn && $student->hasActMath() && $student->hasActEnglish() && $student->hasActWriting()) $extraF .= '{label: "You", ' . $selfColors . ', data: [' . $student->actMath() . ', ' . $student->actReading() . ', ' . $student->actWriting() . ']}, ';
-    $extraF .= '{label: "' . $result->name() . '", ' . $schoolColors . ', data: [' . $result->actMath50() . ', ' . $result->actEnglish50() . ', ' . $result->actWriting50() . ']}]};';
+    if($result->hasActSubscores()) $extraF .= '{label: "' . $result->name() . '", ' . $schoolColors . ', data: [' . $result->actMath50() . ', ' . $result->actEnglish50() . ', ' . $result->actWriting50() . ']}';
+    $extraF .= ']};';
 
     $extraF .= '</script>';
   }
