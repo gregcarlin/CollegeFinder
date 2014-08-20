@@ -11,6 +11,10 @@ class School extends StoredObject {
     return $this->get("name");
   }
 
+  function urlname() {
+    return str_replace(' ', '-', str_replace('-', '--', $this->name()));
+  }
+
   function address() {
     return $this->getTagged("address", "Address");
   }

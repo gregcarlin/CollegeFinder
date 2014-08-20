@@ -5,8 +5,21 @@
     die();
   }
 
-  $name = $_GET['name'];
-  $name = str_replace('-', ' ', $name);
+  $nameArr = str_split($_GET['name']);
+  $nameArrLen = count($nameArr);
+  $name = '';
+  for($i = 0; $i < $nameArrLen; $i++) {
+    if($nameArr[$i] == '-') {
+      if($i + 1 < $nameArrLen && $nameArr[$i+1] == '-') {
+        $name .= '-';
+        $i++;
+      } else {
+        $name .= ' ';
+      }
+    } else {
+      $name .= $nameArr[$i];
+    }
+  }
   echo $name;
 
   require_once "../util/util.php";
@@ -14,7 +27,8 @@
   $stmt = $mysql->prepare("SELECT * FROM `schools`,`supplementary` WHERE `schools`.`id` = `supplementary`.`id` AND `schools`.`name` = ?");
   $stmt->bind_param("s", $name);
   $stmt->execute();
-  $result = getSchools(getResult($stmt))[0];
+  $result = getResult($stmt);
+  if(count($result) > 0) $result = getSchools($result)[0];
   $stmt->close();
 
   $page = 2;

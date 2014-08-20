@@ -175,7 +175,7 @@ function formatSchool($school, $listPage=false) {
   global $mysql, $id;
   $format = '<tr id="row-' . $school->id() . '">';
 
-  $format .= '<td><a href="school.php?id=' . $school->id() . '">' . $school->name() . '</a></td>';
+  $format .= '<td><a href="school/' . $school->urlname() . '">' . $school->name() . '</a></td>';
   $format .= '<td>' . $school->city() . '</td>';
   $format .= '<td>' . $school->state() . '</td>';
   $format .= '<td>' . $school->satRange() . '</td>';
